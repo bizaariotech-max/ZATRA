@@ -1,0 +1,35 @@
+.btn-second {
+  border: 2px solid var(--web-primary);
+  color: var(--primary);
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-second:hover {
+  background-color: var(--web-primary);
+  color: #ffffff;
+  ;
+}
+
+.btn-first {
+  background-color: var(--web-primary);
+  color: #ffffff;
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 2px solid var(--web-primary);
+  transition: all 0.3s ease-in-out;
+
+}
+
+.btn-first:hover {
+  background-color: #ffffff;
+  color: var(--web-primary);
+}
+nav .active{
+  color: var(--web-primary);
+  font-weight: 600;
+  
+}

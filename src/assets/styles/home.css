@@ -1,0 +1,44 @@
+.space-top {
+  margin-top: 80px;
+}
+
+.spaceBottom {
+  margin-bottom: 80px !important;
+}
+
+@media screen and (max-width:1024px) {
+  .space-top {
+    margin-top: 60px !important;
+  }
+
+  .spaceBottom {
+    margin-bottom: 60px !important;
+  }
+}
+
+@media screen and (max-width: 769px) {
+  .space-top {
+    margin-top: 40px !important;
+  }
+
+  .spaceBottom {
+    margin-bottom: 40px !important;
+  }
+}
+
+.one-district-section button.slick-arrow.slick-prev {
+  position: absolute;
+  z-index: 2;
+  top: 85%;
+  left: 78%;
+}
+
+.one-district-section button.slick-arrow.slick-next {
+  position: absolute;
+  right: 40px;
+  top: 85%;
+}
+
+.theme-shadow {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}

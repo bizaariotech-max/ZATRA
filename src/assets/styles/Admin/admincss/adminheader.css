@@ -1,0 +1,11 @@
+.language-input{
+ 
+    border-radius: 6px;
+    border: 1px solid #0077B5;
+    padding: 10px 15px;
+    min-height: 38px;
+}
+button.search-btn-style {
+    padding: 12.5px;
+    min-width: 70px;
+}
