@@ -73,6 +73,7 @@ const useAdminSidebarLinks = (role) => {
             ],
         },
         { id: "3", icon: <VerifiedUserTwoToneIcon />, link: "/admin/station-admin", label: "Station Admin",dock:true },
+        { id: "4", icon: <VerifiedUserTwoToneIcon />, link: "/admin/zatra-admin", label: "Zatra Admin",dock:true },
        
     ];
 

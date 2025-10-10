@@ -84,7 +84,7 @@ export default function AutoSlider() {
   };
 
   useEffect(() => {
-    startTimer();
+    // startTimer();
     return clearTimer;
   }, []);
 
@@ -100,7 +100,7 @@ export default function AutoSlider() {
 
   // Pause on hover
   const onMouseEnter = () => clearTimer();
-  const onMouseLeave = () => startTimer();
+  const onMouseLeave = () => console.log("onMouseLeave");
 
   const active = slides[index];
   const textOnRight = index <= 2;
@@ -128,7 +128,7 @@ export default function AutoSlider() {
       type="button"
       onClick={() => {
         goTo(i);
-        startTimer();
+        // startTimer();
       }}
       aria-label={`Go to slide ${i + 1}`}
       aria-selected={i === index}

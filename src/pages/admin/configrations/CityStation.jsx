@@ -196,7 +196,7 @@ const CityStation = () => {
                 </div>
 
                 <div className="mt-4">
-                    <FormButton disable={isLoading}>{isLoading ? editId ? "Updating..." : "Adding..." : editId ? "Update" : "Save"}</FormButton>
+                    <FormButton disabled={isLoading}>{isLoading ? editId ? "Updating..." : "Adding..." : editId ? "Update" : "Save"}</FormButton>
                 </div>
             </form>
             <div className="bg-white pb-2 rounded-xl my-16 ">

@@ -30,6 +30,7 @@ import RegistrationFeeCategory from "../pages/admin/configrations/RegistrationFe
 import CallActionType from "../pages/admin/configrations/CallActionType";
 import Currency from "../pages/admin/configrations/Currency";
 import StationAdmin from "../pages/admin/stationAdmin/StationAdmin";
+import ZatraList from "../pages/admin/zatra/ZatraList";
 
 const AdminRoutes = () => (
   <Routes>
@@ -41,7 +42,7 @@ const AdminRoutes = () => (
         <Route path="brand-type" element={<BrandType />} />
         <Route path="industry-sector" element={<IndustrySector />} />
         <Route path="sub-sector" element={<SubSector />} />
-        <Route path="product-category" element={<ProductCategory/>} />
+        <Route path="product-category" element={<ProductCategory />} />
         <Route path="product-sub-category" element={<ProductSubcategory />} />
         <Route path="panchtatva-level-1" element={<PanchtatvaLevel1 />} />
         <Route path="panchtatva-level-2" element={<PanchtatvaLevel2 />} />
@@ -49,26 +50,26 @@ const AdminRoutes = () => (
         <Route path="oraganizer-type" element={<OrganizerType />} />
         <Route path="zatra-type" element={<ZatraType />} />
         <Route path="verification-checklist-type" element={<VerificationChecklistType />} />
-        <Route path="verifier-name" element={<VerifierName/>} />
+        <Route path="verifier-name" element={<VerifierName />} />
         <Route path="disease-type" element={<DiseaseType />} />
         <Route path="blood-group-type" element={<BloodGroupType />} />
         <Route path="user-kyc-type" element={<UserKycType />} />
-        <Route path="city-station" element={<CityStation/>} />
-        <Route path="social-media-asset" element={<SocialMediaAssets/>} />
-        <Route path="establishment-type" element={<EstablishmentType/>} />
-        <Route path="shop-type" element={<ShopType/>} />
-        <Route path="service-package-type" element={<ServicePackageType/>} />
-        <Route path="registration-fee-category" element={<RegistrationFeeCategory/>} />
-        <Route path="call-to-action-type" element={<CallActionType/>} />
-        <Route path="service-type" element={<ServiceType/>} />
-        <Route path="currency" element = {<Currency/>} />
+        <Route path="city-station" element={<CityStation />} />
+        <Route path="social-media-asset" element={<SocialMediaAssets />} />
+        <Route path="establishment-type" element={<EstablishmentType />} />
+        <Route path="shop-type" element={<ShopType />} />
+        <Route path="service-package-type" element={<ServicePackageType />} />
+        <Route path="registration-fee-category" element={<RegistrationFeeCategory />} />
+        <Route path="call-to-action-type" element={<CallActionType />} />
+        <Route path="service-type" element={<ServiceType />} />
+        <Route path="currency" element={<Currency />} />
 
 
         {/* Catch-all inside configuration */}
         <Route path="*" element={<ErrorPage />} />
       </Route>
       <Route path="station-admin" element={<StationAdmin />} />
-
+      <Route path="zatra-admin" element={<ZatraList />} />
       {/*========== Asset Master ==============*/}
 
       {/* Catch-all inside admin */}

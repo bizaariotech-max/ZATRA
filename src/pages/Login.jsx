@@ -101,19 +101,19 @@ const Login = () => {
                             <Checkbox
                                 id="remember"
                                 sx={{
-                                    color: "var(--primary)",
+                                    color: "var(--web-primary)",
                                     "&.Mui-checked": {
-                                        color: "var(--primary)",
+                                        color: "var(--web-primary)",
                                     },
                                 }}
                                 checked={formik.values.checked}
                                 onChange={(e) => formik.setFieldValue("checked", e.target.checked)}
                             />
-                            <label htmlFor="remember" className="text-primary cursor-pointer">
+                            <label htmlFor="remember" className="text-webprimary cursor-pointer">
                                 Remember me
                             </label>
                         </div>
-                        <Link to="/forgot-password" className='text-primary underline'>Forgot Password?</Link>
+                        <Link to="/forgot-password" className='text-webprimary underline'>Forgot Password?</Link>
                     </div>
 
                     <div className="mt-2">
