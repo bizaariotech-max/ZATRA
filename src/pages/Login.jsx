@@ -29,8 +29,8 @@ const Login = () => {
     });
     const formik = useFormik({
         initialValues: {
-            MobileNumber: "",
-            Password: "",
+            MobileNumber: "8657865577",
+            Password: "888",
             checked: false
         },
         validationSchema: validationSchema,
