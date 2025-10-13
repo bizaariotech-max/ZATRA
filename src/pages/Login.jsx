@@ -1,4 +1,4 @@
-import { Checkbox, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Checkbox, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import FormInput from '../components/common/FormInput'
@@ -29,10 +29,11 @@ const Login = () => {
     });
     const formik = useFormik({
         initialValues: {
-            MobileNumber: "8657865577",
-            Password: "888",
+            MobileNumber: value === "Super Admin" ?  "8657865577" : "",
+            Password: value === "Super Admin" ? "888" : "",
             checked: false
         },
+        enableReinitialize: true,
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             try {
@@ -90,12 +91,12 @@ const Login = () => {
                 <Typography variant='h5' sx={{ mb: 1, fontWeight: 'bold' }}>Welcome Back</Typography>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>Need an account? <Link to="/signup" className='text-primary underline'>Sign Up </Link></Typography>
                 <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 mt-8 rounded-md ">
-                    <div className='my-4'>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='my-4'>
                         <Tabs value={value} onChange={(e, newValue) => setValue(newValue)} aria-label="basic tabs example">
                             <Tab value="Super Admin" label="Admin" />
                             <Tab value="others" label="Others" />
                         </Tabs>
-                    </div>
+                    </Box>
                     <div className="grid grid-cols-1 gap-4">
                         <FormInput
                             label="Login ID"
