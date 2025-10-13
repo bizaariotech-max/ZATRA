@@ -47,7 +47,7 @@ const __getStationMasterList = async () => {
         })
 }
 const __commonLogin = async (payload) => {
-    return __postApiData(`/api/v1/common/Login`, payload)
+    return __postApiData(`/api/v1/admin/NewZatraLogin`, payload)
         .then(res => {
             return res
         })

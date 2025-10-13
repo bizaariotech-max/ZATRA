@@ -150,7 +150,7 @@ const Enroute = ({ open, onClose, zatraDetails, setZatraDetails, reload }) => {
             {/* 🧾 Form Section */}
             <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 p-4">
                 <DialogContent className="space-y-4">
-                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                    <label className="block text-lg font-semibold mb-2">
                         Enroute Stations
                     </label>
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, IconButton, Typography, Divider, Button, Avatar } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronUp, } from "lucide-react";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -8,17 +8,18 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { toast } from "react-toastify";
 import useAdminSidebarLinks from "../../hooks/admin/useAdminSidebarLinks";
 import Logo from '../../assets/images/logo-web.png'
-// import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 const AdminSidebar = ({ show, toggleDrawer }) => {
   const { pathname } = useLocation();
-  // const { userDetails, logout } = useAuth();
-  const links = useAdminSidebarLinks("Super Admin");
+  const navigate = useNavigate();
+  const { userDetails, logout } = useAuth();
+  const links = useAdminSidebarLinks(userDetails?.Role);
   const [openSubListId, setOpenSubListId] = useState(null);
   //=========== function to handle logout ===========\\
   const handleLogout = () => {
-    // logout();
+    logout();
     toast.success("Logout successfully");
-    window.location.href = "/";
+    navigate("/");
   }
 
   return (

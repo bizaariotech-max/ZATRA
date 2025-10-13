@@ -4,12 +4,12 @@ import '../../assets/styles/Admin/admincss/adminheader.css'
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Bell, Mail, Menu, Search, } from 'lucide-react';
 import { Avatar } from '@mui/material';
-// import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 
 const AdminTopbar = ({ show, toggleShow }) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  // const {userDetails} = useAuth();
+  const {userDetails} = useAuth();
   return (
     <header className="app-topbar bg-white border-b border-gray-100 flex items-center py-3 px-4 justify-between shadow-md">
       <div className='flex justify-between w-full'>
@@ -53,7 +53,7 @@ const AdminTopbar = ({ show, toggleShow }) => {
           <div className="items-center space-x-2 cursor-pointer hidden lg:flex">
             <Avatar alt="profile" className="w-8 h-8 rounded-full" />
             <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold text-primary">Hello, Super Admin</span>
+              <span className="text-sm font-semibold text-primary">Hello, {userDetails?.Role}</span>
               {/* <span className="text-xs text-muted-foreground">Doctor</span> */}
             </div>
           </div>
@@ -84,7 +84,7 @@ const AdminTopbar = ({ show, toggleShow }) => {
                   <div className="items-center space-x-2 cursor-pointer flex lg:hidden mt-3 mb-2">
                     <Avatar alt="profile" className="w-8 h-8 rounded-full" />
                     <div className="flex flex-col leading-tight">
-                      <span className="text-md font-semibold text-primary">Hello, Super Admin</span>
+                      <span className="text-md font-semibold text-primary">Hello, {userDetails?.Role}</span>
                       {/* <span className="text-xs text-muted-foreground">Doctor</span> */}
                     </div>
                   </div>

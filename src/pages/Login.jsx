@@ -1,4 +1,4 @@
-import { Checkbox, Typography } from '@mui/material'
+import { Checkbox, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import FormInput from '../components/common/FormInput'
@@ -10,9 +10,13 @@ import { IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Popup } from '../components/common/Popup'
 import Logo from '../assets/images/logo-web.png'
+import { __commonLogin } from '../utils/api/commonApi'
+import { useAuth } from '../context/AuthContext'
 const Login = () => {
     const [isLoading, setIsLoading] = React.useState(false);
+    const [value, setValue] = React.useState("Super Admin");
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [showPassword, setShowPassword] = React.useState(false);
 
     const handleClickShowPassword = () => {
@@ -20,13 +24,13 @@ const Login = () => {
     };
 
     const validationSchema = Yup.object().shape({
-        PhoneNumber: Yup.number().required("PhoneNumber is required"),
-        password: Yup.string().required("Password is required"),
+        MobileNumber: Yup.number().required("MobileNumber is required"),
+        Password: Yup.string().required("Password is required"),
     });
     const formik = useFormik({
         initialValues: {
-            PhoneNumber: "",
-            password: "",
+            MobileNumber: "",
+            Password: "",
             checked: false
         },
         validationSchema: validationSchema,
@@ -34,12 +38,33 @@ const Login = () => {
             try {
                 setIsLoading(true);
                 const payload = {
-                    LoginFrom: "Admin",
-                    PhoneNumber: values.PhoneNumber,
-                    Password: values.password,
+                    MobileNumber: values.MobileNumber,
+                    Password: values.Password,
+                    LoginAssetRef: [
+                        "admin_lookups",
+                        "zatra_master",
+                        "asset_master2",
+                    ],
                 }
-                console.log(payload);
-                navigate("/admin")
+                if (value === "Super Admin") {
+                    login(123445, {
+                        Role: "Super Admin",
+                        Name: "Super Admin",
+                        MobileNumber: "123445"
+                    })
+                    navigate("/admin")
+                } else {
+                    const res = await __commonLogin(payload);
+                    if (res?.response?.response_code === "200") {
+                        login(res.data?.AuthToken, { ...res.data?.AdminData, Role: res.data?.AdminData?.LoginAssetType?.lookup_value });
+                        navigate("/station-dashboard");
+                    } else {
+
+                        Popup("error", res?.response.response_message || "Failed to login");
+
+                    }
+                }
+                // navigate("/admin")
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error in  Login :", error);
@@ -65,22 +90,28 @@ const Login = () => {
                 <Typography variant='h5' sx={{ mb: 1, fontWeight: 'bold' }}>Welcome Back</Typography>
                 <Typography variant='body1' sx={{ fontWeight: 'bold' }}>Need an account? <Link to="/signup" className='text-primary underline'>Sign Up </Link></Typography>
                 <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 mt-8 rounded-md ">
+                    <div className='my-4'>
+                        <Tabs value={value} onChange={(e, newValue) => setValue(newValue)} aria-label="basic tabs example">
+                            <Tab value="Super Admin" label="Admin" />
+                            <Tab value="others" label="Others" />
+                        </Tabs>
+                    </div>
                     <div className="grid grid-cols-1 gap-4">
                         <FormInput
                             label="Login ID"
-                            name="PhoneNumber"
+                            name="MobileNumber"
                             placeholder="Enter mobile number"
-                            value={formik.values.PhoneNumber}
+                            value={formik.values.MobileNumber}
                             onChange={formik.handleChange}
-                            error={formik.touched.PhoneNumber && Boolean(formik.errors.PhoneNumber)}
-                            helperText={formik.touched.PhoneNumber && formik.errors.PhoneNumber}
+                            error={formik.touched.MobileNumber && Boolean(formik.errors.MobileNumber)}
+                            helperText={formik.touched.MobileNumber && formik.errors.MobileNumber}
                         />
                         <FormInput
                             label="Password"
-                            name="password"
+                            name="Password"
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter your password"
-                            value={formik.values.password}
+                            value={formik.values.Password}
                             onChange={formik.handleChange}
                             InputProps={{
                                 endAdornment: (

@@ -12,7 +12,7 @@ import FormButton from '../../common/FormButton';
 import { __postApiData } from '../../../utils/api';
 import AddLogin from './AddLogin';
 
-const LoginListModal = ({ title, open, handleClose, LoginAssetId }) => {
+const LoginListModal = ({ title, open, handleClose, LoginAssetId, openModalLogin }) => {
     const [state, setState] = useState({
         isLoading: false,
         adminList: [],
@@ -199,8 +199,8 @@ const LoginListModal = ({ title, open, handleClose, LoginAssetId }) => {
             <AddLogin
                 openModal={openModal}
                 handleCloseModal={handleCloseModal}
-                LoginAssetType={"68b93a5d257a82004b4388cc"}
-                LoginAssetRef={"admin_lookups"}
+                LoginAssetType={openModalLogin?.type === "admin" ? "68b93a4d257a82004b4388cb" : "68b93a5d257a82004b4388cc"}
+                LoginAssetRef={openModalLogin?.type === "admin" ? "zatra_master" : "admin_lookups"}
                 LoginAssetId={LoginAssetId}
                 editId={editId}
                 formData={formData}

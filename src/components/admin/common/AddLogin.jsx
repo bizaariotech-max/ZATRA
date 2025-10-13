@@ -33,11 +33,20 @@ const AddLogin = ({
         setIsLoading(true);
 
         try {
-            if(!formData?.Name || !formData?.PhoneNumber || !formData?.Password){
-                toast.error("Please fill all the required fields like Name, Phone number and Password");
-                return;
+            if (editId) {
+                // Edit mode: Only Name and PhoneNumber are required
+                if (!formData?.Name || !formData?.PhoneNumber) {
+                    toast.error("Please fill all the required fields: Name and Phone number");
+                    return;
+                }
+            } else {
+                // Add mode: All three fields are required
+                if (!formData?.Name || !formData?.PhoneNumber || !formData?.Password) {
+                    toast.error("Please fill all the required fields: Name, Phone number, and Password");
+                    return;
+                }
             }
-            if(isNaN(formData?.PhoneNumber)){
+            if (isNaN(formData?.PhoneNumber)) {
                 toast.error("Please enter a valid phone number");
                 return;
             }

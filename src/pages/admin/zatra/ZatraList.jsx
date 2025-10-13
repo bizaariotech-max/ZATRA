@@ -15,6 +15,9 @@ import { __formatDate2 } from "../../../utils/api/constantfun";
 import ZatraDetails from "../../../components/admin/zatra/ZatraDetails";
 import Enroute from "../../../components/admin/zatra/Enroute";
 import Organizer from "../../../components/admin/zatra/Organizer";
+import SocialMedia from "../../../components/admin/zatra/SocialMedia";
+import RegistrationFee from "../../../components/admin/zatra/RegistrationFee";
+import LoginListModal from "../../../components/admin/common/LoginListModal";
 const ZatraList = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [zatraList, setZatraList] = React.useState([]);
@@ -127,7 +130,7 @@ const ZatraList = () => {
                         >
                             Organizer
                         </MenuItem>
-                         <MenuItem
+                        <MenuItem
                             onClick={() => {
                                 setZatraDetails(params.row);
                                 handleOpenModal("sponsor");
@@ -135,6 +138,33 @@ const ZatraList = () => {
                             }}
                         >
                             Sponsors
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setZatraDetails(params.row);
+                                handleOpenModal("social");
+                                handleMenuClose();
+                            }}
+                        >
+                            Social Media
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setZatraDetails(params.row);
+                                handleOpenModal("registration");
+                                handleMenuClose();
+                            }}
+                        >
+                            Registration Fees
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setZatraDetails(params.row);
+                                handleOpenModal("admin");
+                                handleMenuClose();
+                            }}
+                        >
+                            Admin Login
                         </MenuItem>
                     </Menu>
                 </>
@@ -436,7 +466,7 @@ const ZatraList = () => {
                     reload={fetchZatraList}
                 />
             )}
-              {openModal.type === "organizer" && (
+            {openModal.type === "organizer" && (
                 <Organizer
                     open={openModal.isOpen}
                     onClose={handleCloseModal}
@@ -446,7 +476,7 @@ const ZatraList = () => {
                     openModal={openModal}
                 />
             )}
-             {openModal.type === "sponsor" && (
+            {openModal.type === "sponsor" && (
                 <Organizer
                     open={openModal.isOpen}
                     onClose={handleCloseModal}
@@ -454,6 +484,38 @@ const ZatraList = () => {
                     zatraDetails={zatraDetails}
                     reload={fetchZatraList}
                     openModal={openModal}
+                />
+            )}
+            {openModal.type === "social" && (
+                <SocialMedia
+                    open={openModal.isOpen}
+                    onClose={handleCloseModal}
+                    setZatraDetails={setZatraDetails}
+                    zatraDetails={zatraDetails}
+                    reload={fetchZatraList}
+                    openModal={openModal}
+                />
+            )}
+            {openModal.type === "registration" && (
+                <RegistrationFee
+                    open={openModal.isOpen}
+                    onClose={handleCloseModal}
+                    setZatraDetails={setZatraDetails}
+                    zatraDetails={zatraDetails}
+                    reload={fetchZatraList}
+                    openModal={openModal}
+                />
+            )}
+            {openModal.type === "admin" && (
+                <LoginListModal
+                    open={openModal.isOpen}
+                    handleClose={handleCloseModal}
+                    setZatraDetails={setZatraDetails}
+                    zatraDetails={zatraDetails}
+                    reload={fetchZatraList}
+                    openModalLogin={openModal}
+                    title={"Admin Login"}
+                    LoginAssetId={zatraDetails?._id}
                 />
             )}
         </div>

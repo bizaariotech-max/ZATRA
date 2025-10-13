@@ -22,16 +22,19 @@ import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 const useAdminSidebarLinks = (role) => {
     // Links for Service Manager
     const serviceManagerLinks = [
-        { id: "1", icon: <LayoutDashboard />, label: "Dashboard", link: "/dashboard", dock: true },
-        { id: "2", icon: <HealthAndSafetyTwoToneIcon />, label: "Command Center", link: "/dashboard/command-center", dock: true },
-        {
-            id: "3", icon: <MedicalInformationTwoToneIcon />, label: "Fleet Management", link: "/dashboard/fleet-management", dock: false, subList: [
-                { id: "3-1", icon: <MedicalInformationTwoToneIcon />, path: "/dashboard/fleet-management/driver", title: "Driver Dashboard" },
-                { id: "3-2", icon: <MedicalServicesTwoToneIcon />, path: "/dashboard/fleet-management/vehicle", title: "Vehicle Dashboard" },
-            ]
+        { id: "1", icon: <LayoutDashboard />, label: "Station-dashboard", link: "/station-dashboard", dock: true },
+    {
+            id: "2",
+            icon: <Settings2 />,
+            label: "City/Station Contacts",
+            link: "/station-dashboard/city-station-contacts",
+            dock: false,
+            subList: [
+                { id: "2-1", path: "/station-dashboard/city-station-contacts/local-representative", title: "Local Representative" },
+                { id: "2-2", path: "/station-dashboard/city-station-contacts/administrative", title: "Administrative" },
+                { id: "2-3", path: "/station-dashboard/city-station-contacts/industry-associate", title: "Industry Associations" },
+            ],
         },
-        { id: "4", icon: <DepartureBoardTwoToneIcon />, label: "Duty Allocation", link: "/dashboard/duty-allocation", dock: true },
-        { id: "5", icon: <Siren />, label: "Incident Master", link: "/dashboard/incident-master", dock: true },
     ];
 
     // Links for Super Admin
@@ -77,7 +80,7 @@ const useAdminSidebarLinks = (role) => {
        
     ];
 
-    if (role === "Service Manager") {
+    if (role === "Station") {
         return serviceManagerLinks;
     }
     if (role === "Super Admin") {

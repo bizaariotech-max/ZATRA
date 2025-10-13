@@ -11,16 +11,17 @@ import {
     Button,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAdminSidebarLinks from "../../hooks/admin/useAdminSidebarLinks";
-// import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminSidedrawer = ({ show, toggleShow }) => {
     const [openMenu, setOpenMenu] = React.useState(null);
     const { pathname } = useLocation();
-    // const { userDetails, logout } = useAuth();
-    const links = useAdminSidebarLinks("Super Admin");
+    const navigate = useNavigate();
+    const { userDetails, logout } = useAuth();
+    const links = useAdminSidebarLinks(userDetails?.Role);
 
     const handleClick = (id) => {
         setOpenMenu(openMenu === id ? null : id);
@@ -28,9 +29,9 @@ const AdminSidedrawer = ({ show, toggleShow }) => {
 
     //=========== function to handle logout ===========\\
     const handleLogout = () => {
-        // logout();
+        logout();
         toast.success("Logout successfully");
-        window.location.href = "/";
+        navigate('/')
     }
     const DrawerList = (
         <Box
