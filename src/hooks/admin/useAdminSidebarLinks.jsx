@@ -32,7 +32,9 @@ const useAdminSidebarLinks = (role) => {
             subList: [
                 { id: "2-1", path: "/station-dashboard/city-station-contacts/local-representative", title: "Local Representative" },
                 { id: "2-2", path: "/station-dashboard/city-station-contacts/administrative", title: "Administrative" },
-                { id: "2-3", path: "/station-dashboard/city-station-contacts/industry-associate", title: "Industry Associations" },
+                {id: "2-3", path: "/station-dashboard/city-station-contacts/station-indicator", title: "City/Station Indicator" },
+                {id: "2-4", path: "/station-dashboard/city-station-contacts/station-specialities", title: "City/Station Specialities" },
+                { id: "2-5", path: "/station-dashboard/city-station-contacts/industry-associate", title: "Industry Associations" },
             ],
         },
     ];

@@ -9,6 +9,7 @@ const FormInput = ({
   type = "text",
   options = [],
   inputMode,
+  readOnly,
   ...props
 }) => {
   const renderInput = () => {
@@ -111,7 +112,8 @@ const FormInput = ({
             size="small"
             className="custom-input"
             inputProps={{
-              inputMode: inputMode, // <-- pass inputMode here
+              inputMode: inputMode,
+              readOnly: readOnly
             }}
             {...props}
           />

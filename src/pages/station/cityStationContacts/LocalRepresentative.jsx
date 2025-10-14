@@ -18,8 +18,8 @@ const LocalRepresentative = () => {
         try {
             setLoading(true);
             const res = await __postApiData('/api/v1/admin/CityContactList', {
-                page: 1,
-                limit: 10,
+                page: paginationModel.page,
+                limit: paginationModel.pageSize,
                 search: "",
                 CityId: userDetails?.StationId,
                 ContactTypeId: "687756d4aa2e78aefc414a51",

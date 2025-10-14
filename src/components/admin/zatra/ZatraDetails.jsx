@@ -189,6 +189,7 @@ const ZatraDetails = ({ open, onClose, zatraDetails, setZatraDetails, reload }) 
                                         <TextField
                                             size="small"
                                             type="file"
+                                            className="custom-input"
                                             inputProps={{ accept: "image/*" }}
                                             onChange={(e) =>
                                                 handleFileUpload(e, "PictureGallery", index)
@@ -237,6 +238,7 @@ const ZatraDetails = ({ open, onClose, zatraDetails, setZatraDetails, reload }) 
                                         <TextField
                                             size="small"
                                             type="file"
+                                            className="custom-input"
                                             inputProps={{ accept: "video/*" }}
                                             onChange={(e) => handleFileUpload(e, "VideoGallery", index)}
                                         />
