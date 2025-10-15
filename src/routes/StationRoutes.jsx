@@ -8,6 +8,8 @@ import Administrative from '../pages/station/cityStationContacts/Administrative'
 import IndustryAssociate from '../pages/station/cityStationContacts/IndustryAssociate'
 import StationIndicator from '../pages/station/cityStationContacts/StationIndicator'
 import StationSpecialities from '../pages/station/cityStationContacts/StationSpecialities'
+import TouristHelpline from '../pages/station/cityStationContacts/TouristHelpline'
+import GovtScheme from '../pages/station/cityStationContacts/GovtScheme'
 
 const StationRoutes = () => {
     return (
@@ -20,6 +22,8 @@ const StationRoutes = () => {
                     <Route path="station-indicator" element={<StationIndicator />} />
                     <Route path="station-specialities" element={<StationSpecialities />} />
                     <Route path="industry-associate" element={<IndustryAssociate />} />
+                    <Route path='tourist-helpline' element={<TouristHelpline />} />
+                    <Route path='govt-scheme' element={<GovtScheme />} />
 
                     {/* Catch-all inside configuration */}
                     <Route path="*" element={<ErrorPage />} />

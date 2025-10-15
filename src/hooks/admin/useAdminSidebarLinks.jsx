@@ -35,6 +35,8 @@ const useAdminSidebarLinks = (role) => {
                 {id: "2-3", path: "/station-dashboard/city-station-contacts/station-indicator", title: "City/Station Indicator" },
                 {id: "2-4", path: "/station-dashboard/city-station-contacts/station-specialities", title: "City/Station Specialities" },
                 { id: "2-5", path: "/station-dashboard/city-station-contacts/industry-associate", title: "Industry Associations" },
+                { id: "2-6", path: "/station-dashboard/city-station-contacts/tourist-helpline", title: "Tourist Helpline" },
+                { id: "2-7", path: "/station-dashboard/city-station-contacts/govt-scheme", title: "Govt. Schemes / Policies" },
             ],
         },
     ];

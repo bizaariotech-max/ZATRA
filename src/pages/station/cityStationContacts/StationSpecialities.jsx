@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SectionHeader from '../../../components/common/SectionHeader'
 import FormInput from '../../../components/common/FormInput'
 import FormButton from '../../../components/common/FormButton'
@@ -6,9 +6,118 @@ import { Button, IconButton, TextField } from '@mui/material'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import { __postApiData, BASE_URL } from '../../../utils/api'
+import { __getCommenApiDataList } from '../../../utils/api/commonApi'
+import { useAuth } from '../../../context/AuthContext'
+import axios from 'axios'
+import { DataGrid } from '@mui/x-data-grid'
+import DatagridRowAction from '../../../components/common/DatagridRowAction'
 const StationSpecialities = () => {
+    const { userDetails } = useAuth();
+    const [editId, setEditId] = React.useState(null)
     const [isLoading, setIsLoading] = React.useState(false)
+    const [categoryList, setCategoryList] = React.useState([])
+    const [stationSpecialities, setStationSpecialities] = React.useState({
+        loading: false,
+        data: [],
+    })
+    const [paginationModel, setPaginationModel] = useState({
+        page: 0,
+        pageSize: 10,
+    });
+
+    const columns = [
+        {
+            field: "_id", headerName: "Sr. No", width: 90, headerClassName: "health-table-header-style", headerAlign: "center",
+            align: "center",
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params) => {
+                const rowIndex = params.api.getSortedRowIds().indexOf(params.id);
+                return paginationModel.page * paginationModel.pageSize + (rowIndex % paginationModel.pageSize) + 1;
+            },
+        },
+        {
+            field: "StationSpecialityTypeId",
+            headerName: "Speciality Type",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.StationSpecialityTypeId?.lookup_value || "N/A"}</span>,
+        },
+        {
+            field: "CityId",
+            headerName: "City/Station",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.CityId?.lookup_value || "N/A"}</span>,
+        },
+        {
+            field: "Name",
+            headerName: "Name",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.Name || "N/A"}</span>,
+        },
+        {
+            field: "ShortDescription",
+            headerName: "ShortDescription",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.ShortDescription || "N/A"}</span>,
+        },
+        {
+            field: "LongDescription",
+            headerName: "LongDescription",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.LongDescription || "N/A"}</span>,
+        },
+        {
+            field: "PictureGallery",
+            headerName: "Image Gallery",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => {
+                const gallery = params.row?.PictureGallery;
+
+                if (!gallery || gallery.length === 0) return <span>N/A</span>;
+
+                return (
+                    <div className="flex gap-2">
+                        {gallery.map((item, index) => (
+                            <img
+                                key={index}
+                                src={item}
+                                alt="Gallery"
+                                className="w-12 h-12 rounded object-cover border border-gray-300"
+                            />
+                        ))}
+                    </div>
+                );
+            },
+        },
+        {
+            field: "actions",
+            headerName: "Actions",
+            flex: 1,
+            minWidth: 150,
+            headerClassName: "health-table-header-style",
+            headerAlign: "center",
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            align: "center",
+            renderCell: (params) => <DatagridRowAction row={params.row} onEdit={() => console.log(params.row)}   // ✅ Pass handler
+                onDelete={() => console.log(params.row)} />,
+        }
+    ];
     const formik = useFormik({
         initialValues: {
             StationSpecialityTypeId: "",
@@ -19,10 +128,62 @@ const StationSpecialities = () => {
             VideoGallery: [null],
             URL: [""]
         },
-        onSubmit: async (values) => {
-            console.log("values", values);
+        onSubmit: async (values, { resetForm }) => {
+            const payload = { ...values, CityId: userDetails?.StationId, _id: editId || null };
+            try {
+                setIsLoading(true);
+                const res = await __postApiData("/api/v1/admin/SaveODOP", payload);
+                if (res.response && res.response.response_code === "200") {
+                    toast.success("Station Speciality added successfully");
+                    resetForm();
+                    getStationIndicator();
+                } else {
+                    toast.error(res.response.response_message || "Failed to add Station Speciality");
+                }
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Failed to submit:", error);
+                setIsLoading(false);
+            }
         }
     })
+    ///========== fetch data from api ============\\
+    const fetchData = async (lookupTypes, stateKey, parent_lookup_id) => {
+        try {
+            const data = await __getCommenApiDataList({
+                lookup_type: lookupTypes,
+                parent_lookup_id: parent_lookup_id || null,
+            })
+            // console.log(data);
+            setCategoryList(data);
+        } catch (error) {
+            console.error(`Error fetching ${stateKey}:`, error);
+        }
+    }
+    const getStationIndicator = async () => {
+        try {
+            setStationSpecialities((prev) => ({ ...prev, loading: true }));
+
+            // ✅ Call your API (replace URL with your actual endpoint)
+            const response = await __postApiData("/api/v1/admin/ODOPList");
+            // console.log("API Response:", response);
+            // ✅ Update state with API data
+            setStationSpecialities({
+                loading: false,
+                data: response.data?.list || [], // assuming API response has a 'data' field
+            });
+        } catch (error) {
+            console.error("Error fetching station indicators:", error);
+            setStationSpecialities({
+                loading: false,
+                data: [],
+            });
+        }
+    };
+    useEffect(() => {
+        fetchData(['station_specialty_type'],);
+        getStationIndicator()
+    }, []);
 
     // ✅ File upload (shared for both image & video)
     const handleFileUpload = async (e, key, index = null) => {
@@ -90,7 +251,7 @@ const StationSpecialities = () => {
                         name="StationSpecialityTypeId"
                         type='select'
                         placeholder="Select a option"
-                        options={[{ _id: "1", lookup_value: "Local Representative" }]}
+                        options={categoryList}
                         value={formik.values?.StationSpecialityTypeId}
                         onChange={formik.handleChange}
                         error={formik.touched.StationSpecialityTypeId && formik.errors.StationSpecialityTypeId}
@@ -128,7 +289,7 @@ const StationSpecialities = () => {
                         helperText={formik.touched?.LongDescription && formik.errors?.LongDescription}
                     />
 
-                    {/* 📸 Picture Gallery */}
+                    {/* Picture Gallery */}
                     <div className="">
                         <label className="font-semibold">Picture Gallery</label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -288,6 +449,19 @@ const StationSpecialities = () => {
                     </FormButton>
                 </div>
             </form>
+            <div className="bg-white pb-2 rounded-xl my-16 ">
+                <DataGrid
+                    rows={stationSpecialities?.data}
+                    columns={columns}
+                    loading={stationSpecialities?.loading}
+                    autoHeight
+                    pagination
+                    getRowId={(row) => row._id}
+                    paginationModel={paginationModel}
+                    onPaginationModelChange={setPaginationModel}
+                    pageSizeOptions={[5, 10]}
+                />
+            </div>
         </div>
     )
 }
