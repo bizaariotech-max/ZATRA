@@ -9,17 +9,18 @@ const SLIDE_INTERVAL_MS = 3000
 const slides = [
   {
     id: 1,
-    title: "Explore",
+    title: "Trade & Commerce",
     description:
-      "Discover thriving markets and global business opportunities.Experience commerce, partnerships, and opportunities that drive progress",
+      "Discover thriving markets and global business opportunities.Experience commerce, partnerships, and opportunities that drive progress.",
     cta: { label: "Explore ZATRA", href: "#" },
-    src: "/slide2/slide1.png",
+    src:"/slide2/slide6.png",
     alt: "Snow-capped mountains and a serene lake",
   },
   {
     id: 2,
     title: "Tourism & Sightseeing",
-    description: "Explore sights, celebrate traditions, enjoy authentic flavours, expand trade opportunities, and experience global care.",
+    description:
+      "Explore sights, celebrate traditions, enjoy authentic flavours, expand trade opportunities, and experience global care.",
     cta: { label: "Explore ZATRA", href: "#" },
     src: "/slide2/slide2.png",
     alt: "Technology concept with circuits",
@@ -27,33 +28,37 @@ const slides = [
   {
     id: 3,
     title: "Explore",
-    description: "Explore breathtaking destinations, cultural heritage, authentic tastes, thriving trade, and trusted treatment.",
+    description:
+      "Explore breathtaking destinations, cultural heritage, authentic tastes, thriving trade, and trusted treatment.",
     cta: { label: "Explore ZATRA", href: "#" },
-    src: "/slide2/slide3.png",
+    src: "/slide2/slide1.png",
     alt: "Gourmet plated food",
   },
   {
     id: 4,
     title: "Treatment & Wellness",
-    description: "Explore advanced healthcare and complete wellness on your journey, where expert care meets.",
+    description:
+      "Explore advanced healthcare and complete wellness on your journey, where expert care meets.",
     cta: { label: "Explore ZATRA", href: "#" },
-    src: "/slide2/slide4.png",
+    src: "/slide2/slide3.png",
     alt: "Colorful cultural festival",
   },
   {
     id: 5,
     title: "Tradition & Arts",
-    description: "Explore timeless traditions and arts that celebrate culture and heritage. Discover rich traditions and artistic expressions that bring history to life.",
+    description:
+      "Explore timeless traditions and arts that celebrate culture and heritage. Discover rich traditions and artistic expressions that bring history to life.",
     cta: { label: "Explore ZATRA", href: "#" },
-    src: "/slide2/slide5.png",
+    src: "/slide2/slide4.png",
     alt: "Spa wellness scene",
   },
   {
     id: 6,
     title: "Taste & Culinary",
-    description: "Savor authentic flavors and culinary delights from every corner.Indulge in flavors that tell the story of culture and tradition.",
+    description:
+      "Savor authentic flavors and culinary delights from every corner. Indulge in flavors that tell the story of culture and tradition.",
     cta: { label: "Explore ZATRA", href: "#" },
-    src: "/slide2/slide6.png",
+    src: "/slide2/slide5.png",
     alt: "Business trade opportunities",
   },
 ];
@@ -140,8 +145,7 @@ export default function MobileViewSlider() {
             key={active.id} // Forces re-render so animation restarts
             src={active.src || "/placeholder.svg"}
             alt={active.alt}
-            className={`h-[260px] md:h-[360px] w-full object-cover transition-opacity duration-500 ${prevIndex !== null ? "opacity-0 animate-fadeIn" : "opacity-100"
-              }`}
+            className={`h-[260px] md:h-[360px] w-full object-cover transition-opacity duration-300 ${prevIndex === null ? "opacity-100" : "opacity-0"}`}
             crossOrigin="anonymous"
           />
 

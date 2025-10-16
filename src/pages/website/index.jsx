@@ -13,8 +13,8 @@ const LandingPage = () => {
 
   return (
     <>
-      <Hero />
-      {/* <main className="relative lg:h-screen lg:max-h-[600px] mx-auto px-4 py-10" style={{
+      {/* <Hero /> */}
+      <main className="relative lg:h-screen  mx-auto px-4 py-10" style={{
         backgroundImage: `url(${banner1})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -28,7 +28,7 @@ const LandingPage = () => {
         <div className='block lg:hidden'>
           <MobileViewSlider />
         </div>
-      </main> */}
+      </main>
       <SearchTabs />
       <ZataraPackages />
       <ZatraAbout />

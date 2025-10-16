@@ -58,7 +58,7 @@ const SearchTabs = () => {
   return (
     <div className='px-3'>
 
-      <div className='shadow-card bg-white md:translate-y-[-30px] lg:-translate-y-[60px] max-w-[800px] mx-auto rounded-[10px] my-12 md:my-0'>
+      <div className='shadow-card bg-white md:translate-y-[-30px] lg:-translate-y-[20px] max-w-[800px] mx-auto rounded-[10px] my-12 md:my-0'>
         <div className='mx-6 md:mx-0 '>
 
           <div className='sm:flex ' >
