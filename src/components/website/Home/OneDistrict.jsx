@@ -131,10 +131,12 @@ const OneDistrict = () => {
           .react-multiple-carousel__arrow--left {
             left: 80%;
             bottom: 20px;
+            z-index: 10;
           }
             .react-multiple-carousel__arrow--right {
             bottom: 20px;
             right: 20px;
+            z-index: 10;
           }
       }
       `}

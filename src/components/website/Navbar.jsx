@@ -13,7 +13,7 @@ const Navbar = () => {
   const navLinksData = [
     { name: 'Home', href: '/' },
     { name: 'About Us', href: 'about' },
-    { name: 'ODOP', href: 'shop' },
+    { name: 'ODOP', href: 'odop' },
     { name: 'Trip & Commerce', href: 'trip-commerce' },
     { name: 'Contact Us', href: 'contact' }
   ];

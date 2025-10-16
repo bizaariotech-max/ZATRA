@@ -22,7 +22,7 @@ export default function PackageCard({ title, period, organizer, image }) {
         <Button size="small" variant="contained" color="primary"  >
           Book ZATRA
         </Button> */}
-        <Link to="/ganga-darshan" className="w-full">
+         <Link to="/religious" className="w-full">
           <button className="btn-second w-full">
             Know More
           </button>

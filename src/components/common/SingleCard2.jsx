@@ -16,48 +16,41 @@ export default function SingleCard2({ data = [], buttonText }) {
 
           {/* Content Section */}
           <div className="md:w-3/5 p-4 md:p-6">
-            <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
-              {data?.title || null}
-            </h2>
+            
+            <div>
+              <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
+                {data?.title || null}
+              </h2>
 
-            <p className="text-gray-700 mb-2">
-              {data?.subtitle || null}
-            </p>
+              <p className="text-gray-700 mb-2">
+                {data?.subtitle || null}
+              </p>
+            </div>
 
-            <p className="text-webprimary font-semibold text-lg mb-2">
-              {data?.desc || null}
-            </p>
+            {data?.socialIcon ?
+              <div>
+                {data?.socialIcon}
+              </div>
+              : null
+            }
 
-            <button className="zatra-btn-fill w-full">
-              {data?.btnText || buttonText || null}
-            </button>
+            {data?.desc ?
+              <p className="text-webprimary font-semibold text-lg mb-2">
+                {data?.desc || null}
+              </p>
+              : null
+            }
+            {data?.btnText || buttonText ?
+              <button className="zatra-btn-fill w-full">
+                {data?.btnText || buttonText || null}
+              </button>
+              : null
+            }
           </div>
         </div>
       </div>
 
-      <style jsx>{`
-        // .zatra-btn-fill {
-        //   background-color: #0284c7;
-        //   color: white;
-        //   font-weight: 600;
-        //   padding: 14px 24px;
-        //   border-radius: 8px;
-        //   border: none;
-        //   cursor: pointer;
-        //   transition: all 0.3s ease;
-        //   font-size: 1.125rem;
-        // }
 
-        // .zatra-btn-fill:hover {
-        //   background-color: #0369a1;
-        //   transform: translateY(-2px);
-        //   box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
-        // }
-
-        // .zatra-btn-fill:active {
-        //   transform: translateY(0);
-        // }
-      `}</style>
     </div>
   );
 }
