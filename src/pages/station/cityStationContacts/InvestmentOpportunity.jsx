@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import SectionHeader from '../../../components/common/SectionHeader'
 import FormInput from '../../../components/common/FormInput'
 import FormButton from '../../../components/common/FormButton'
-import { Button, Checkbox, IconButton, TextField } from '@mui/material'
-import { Form, useFormik } from 'formik'
+import { Button, Checkbox, Chip, IconButton, Stack, TextField } from '@mui/material'
+import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import DeleteIcon from "@mui/icons-material/Delete";
 import { __postApiData, BASE_URL } from '../../../utils/api'
@@ -12,6 +12,7 @@ import { useAuth } from '../../../context/AuthContext'
 import axios from 'axios'
 import { DataGrid } from '@mui/x-data-grid'
 import DatagridRowAction from '../../../components/common/DatagridRowAction'
+import { __formatDate } from '../../../utils/api/constantfun'
 
 const InvestmentOpportunity = () => {
     const { userDetails } = useAuth();
@@ -23,6 +24,241 @@ const InvestmentOpportunity = () => {
         AmenitiesList: []
     });
     const { prodjectTypeList, unitTypeList, approvalList, AmenitiesList } = dataList;
+    const [list, setList] = useState({ data: [], loading: false });
+    const [paginationModel, setPaginationModel] = useState({
+        page: 0,
+        pageSize: 10,
+    });
+
+    const columns = [
+        {
+            field: "_id", headerName: "Sr. No", width: 90, headerClassName: "health-table-header-style", headerAlign: "center",
+            align: "center",
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params) => {
+                const rowIndex = params.api.getSortedRowIds().indexOf(params.id);
+                return paginationModel.page * paginationModel.pageSize + (rowIndex % paginationModel.pageSize) + 1;
+            },
+        },
+        {
+            field: "City Name",
+            headerName: "City Name",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.CityId?.lookup_value || "N/A"}</span>,
+        },
+        {
+            field: "ProjectType",
+            headerName: "Project Type",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.ProjectType?.lookup_value || "N/A"}</span>,
+        },
+        {
+            field: "ProjectName",
+            headerName: "Project Name",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.ProjectName || "N/A"}</span>,
+        },
+        {
+            field: "ProjectLocation",
+            headerName: "Project Location",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.ProjectLocation || "N/A"}</span>,
+        },
+        {
+            field: "MinimumInvestment",
+            headerName: "Minimum Investment (in INR)",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.MinimumInvestment || "N/A"}</span>,
+        },
+        {
+            field: "AssuredROI",
+            headerName: "Assured ROI (in %)",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.AssuredROI || "N/A"}</span>,
+        },
+        {
+            field: "LockinPeriod",
+            headerName: "Lockin Period (in years)",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{params.row?.LockinPeriod || "N/A"}</span>,
+        },
+        {
+            field: "ProjectStartDate",
+            headerName: "Project Start Date",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{__formatDate(params.row?.ProjectStartDate) || "N/A"}</span>,
+        },
+        {
+            field: "CompletionDeadline",
+            headerName: "Completion Deadline",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{__formatDate(params.row?.CompletionDeadline) || "N/A"}</span>,
+        },
+        {
+            field: "AvailableSizes",
+            headerName: "Available Sizes",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => (
+                <span>
+                    {Array.isArray(params.row?.AvailableSizes) && params.row.AvailableSizes.length > 0
+                        ? params.row.AvailableSizes
+                            .map((item) => `${item?.Size} ${item?.Unit?.lookup_value}`)
+                            .join(", ")
+                        : "N/A"}
+                </span>
+            ),
+        },
+
+        {
+            field: "ApprovalStatus",
+            headerName: "Approval Status",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => (
+                Array.isArray(params.row?.ApprovalStatus) && params.row.ApprovalStatus.length > 0 ? (
+                    <Stack direction="row" flexWrap="wrap" gap={1}>
+                        {params.row.ApprovalStatus.map((item, index) => (
+                            <Chip
+                                key={index}
+                                label={item?.lookup_value}
+                                color="success"
+                                size="small"
+                                variant="filled"
+                            />
+                        ))}
+                    </Stack>
+                ) : (
+                    <span>N/A</span>
+                )
+            ),
+        },
+        {
+            field: "ContactName",
+            headerName: "Contact Name",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span>{(params.row?.ContactName) || "N/A"}</span>,
+        },
+        {
+            field: "PhoneNumber",
+            headerName: "Phone Number",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            renderCell: (params) => <span >{(params.row?.PhoneNumber) || "N/A"}</span>,
+        },
+        {
+            field: "EmailAddress",
+            headerName: "Email",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            renderCell: (params) => <span >{(params.row?.EmailAddress) || "N/A"}</span>,
+        },
+        {
+            field: "ProjectDeveloper",
+            headerName: "Project Developer",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            renderCell: (params) => <span >{(params.row?.ProjectDeveloper?.map(item => `${item}`).join(", ")) || "N/A"}</span>,
+        },
+        {
+            field: "BankingPartner",
+            headerName: "Banking Partner",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            renderCell: (params) => <span >{(params.row?.BankingPartner?.map(item => `${item}`).join(", ")) || "N/A"}</span>,
+        },
+        {
+            field: "DistancefromCity",
+            headerName: "Distance from City (in km)",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            renderCell: (params) => <span >{(params.row?.DistancefromCity) || "N/A"}</span>,
+        },
+        {
+            field: "DistancefromAirport",
+            headerName: "Distance from Airport (in km)",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            renderCell: (params) => <span >{(params.row?.DistancefromAirport) || "N/A"}</span>,
+        },
+        {
+            field: "DistancefromRailwayStation",
+            headerName: "Distance from Railway Station (in km)",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            renderCell: (params) => <span >{(params.row?.DistancefromRailwayStation) || "N/A"}</span>,
+        },
+        {
+            field: "Amenities",
+            headerName: "Amenities",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            renderCell: (params) => (
+                Array.isArray(params.row?.Amenities) && params.row.Amenities.length > 0 ? (
+                    <Stack direction="row" flexWrap="wrap" gap={1}>
+                        {params.row.Amenities.map((item, index) => (
+                            <Chip
+                                key={index}
+                                label={item?.lookup_value}
+                                color="success"
+                                size="small"
+                                variant="filled"
+                            />
+                        ))}
+                    </Stack>
+                ) : (
+                    <span>N/A</span>
+                )
+            ),
+        },
+        {
+            field: "Comments",
+            headerName: "Comments",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            renderCell: (params) => <span >{(params.row?.Comments) || "N/A"}</span>,
+        },
+        {
+            field: "actions",
+            headerName: "Actions",
+            flex: 1,
+            minWidth: 150,
+            headerClassName: "health-table-header-style",
+            headerAlign: "center",
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            align: "center",
+            renderCell: (params) => <DatagridRowAction row={params.row} onEdit={() => console.log(params.row)}   // ✅ Pass handler
+                onDelete={() => console.log(params.row)} />,
+        }
+    ]
+
     const formik = useFormik({
         initialValues: {
             ProjectType: '',
@@ -50,7 +286,7 @@ const InvestmentOpportunity = () => {
             Comments: "",
         },
         enableReinitialize: true,
-        onSubmit: async (values) => {
+        onSubmit: async (values, { resetForm }) => {
             const mergedVideos = [
                 ...(values.VideoGallery?.filter(Boolean) || []),
                 ...(values.URL?.filter(Boolean) || []),
@@ -59,16 +295,14 @@ const InvestmentOpportunity = () => {
                 ...values,
                 VideoGallery: mergedVideos,
             };
-
-            console.log("payload", payload);
             try {
 
                 setIsLoading(true);
                 const res = await __postApiData("/api/v1/admin/SaveProject", { ...payload, CityId: userDetails?.StationId });
                 if (res.response && res.response.response_code === "200") {
                     toast.success("Data added successfully");
-                    // resetForm();
-                    // getStationIndicator();
+                    resetForm();
+                    getInvestmentOpportunityData();
                 } else {
                     console.log(res);
                     toast.error(res.response?.response_message || res.response?.response_message?.error || "Failed to add Data");
@@ -80,6 +314,30 @@ const InvestmentOpportunity = () => {
             }
         },
     });
+
+    //========= Function to get the Investment Opportunity data from api ==========\\
+    const getInvestmentOpportunityData = async () => {
+        try {
+            setList((prev) => ({ ...prev, loading: true }));
+            const response = await __postApiData("/api/v1/app/listProjectsOrInvestmentOpportunities", {
+                page: paginationModel.page + 1,
+                limit: paginationModel.pageSize,
+                CityId: userDetails?.StationId,
+            });
+            setList({
+                loading: false,
+                data: response.data?.list || [],
+            });
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setList({
+                loading: false,
+                data: [],
+            });
+        }
+    }
+
+
 
     //========== function to update state dataList ============\\
     const updateState = (data) => setDataList((prevState) => ({ ...prevState, ...data }));
@@ -114,6 +372,7 @@ const InvestmentOpportunity = () => {
         fetchData(['unit_type'], "unitTypeList");
         fetchData(['approval_type'], "approvalList");
         fetchData(['amenities_type'], "AmenitiesList");
+        getInvestmentOpportunityData();
     }, []);
 
     // ✅ File upload (shared for both image & video)
@@ -700,6 +959,27 @@ const InvestmentOpportunity = () => {
                     </FormButton>
                 </div>
             </form>
+            <div className="bg-white pb-2 rounded-xl my-16 ">
+                <DataGrid
+                    rows={list?.data}
+                    columns={columns}
+                    loading={list?.loading}
+                    autoHeight
+                    pagination
+                    getRowHeight={() => "auto"}
+                    getRowId={(row) => row._id}
+                    paginationModel={paginationModel}
+                    onPaginationModelChange={setPaginationModel}
+                    pageSizeOptions={[5, 10]}
+                    sx={{
+                        "& .MuiDataGrid-cell": {
+                            lineHeight: "2rem",
+                            paddingBottom: "10px",
+                            paddingTop: "8px",
+                        },
+                    }}
+                />
+            </div>
         </div>
     )
 }

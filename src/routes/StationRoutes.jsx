@@ -11,6 +11,7 @@ import StationSpecialities from '../pages/station/cityStationContacts/StationSpe
 import TouristHelpline from '../pages/station/cityStationContacts/TouristHelpline'
 import GovtScheme from '../pages/station/cityStationContacts/GovtScheme'
 import InvestmentOpportunity from '../pages/station/cityStationContacts/InvestmentOpportunity'
+import Destination from '../pages/station/destination/Destination'
 
 const StationRoutes = () => {
     return (
@@ -30,6 +31,7 @@ const StationRoutes = () => {
                     {/* Catch-all inside configuration */}
                     <Route path="*" element={<ErrorPage />} />
                 </Route>
+                <Route path='destinations' element={<Destination />} />
                 {/* Catch-all inside admin */}
                 <Route path="*" element={<ErrorPage />} />
             </Route>

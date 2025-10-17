@@ -5,7 +5,7 @@ const renderSerialNumber = (params, paginationModel) => {
   const rowIndex = params.api.getSortedRowIds().indexOf(params.id);
   return paginationModel.page * paginationModel.pageSize + (rowIndex % paginationModel.pageSize) + 1;
 };
-const StationContactList =  memo(({ contactList = [], isLoading = false , paginationModel, setPaginationModel }) => {
+const StationContactList = memo(({ contactList = [], isLoading = false, paginationModel, setPaginationModel }) => {
 
   const columns = [
     {
@@ -138,6 +138,7 @@ const StationContactList =  memo(({ contactList = [], isLoading = false , pagina
           getRowId={(row) => row._id || row.Phone || Math.random()}
           autoHeight
           pagination
+          getRowHeight={() => "auto"}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           pageSizeOptions={[5, 10, 20]}

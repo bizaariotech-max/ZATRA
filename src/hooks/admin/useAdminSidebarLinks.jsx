@@ -1,4 +1,4 @@
-import {BrickWall, LayoutDashboard, Ruler, Settings2, Siren, Trello } from "lucide-react";
+import { BrickWall, LayoutDashboard, Ruler, Settings2, Siren, Trello } from "lucide-react";
 import MedicalInformationTwoToneIcon from '@mui/icons-material/MedicalInformationTwoTone';
 import HealthAndSafetyTwoToneIcon from '@mui/icons-material/HealthAndSafetyTwoTone';
 import DepartureBoardTwoToneIcon from '@mui/icons-material/DepartureBoardTwoTone';
@@ -23,7 +23,7 @@ const useAdminSidebarLinks = (role) => {
     // Links for Service Manager
     const serviceManagerLinks = [
         { id: "1", icon: <LayoutDashboard />, label: "Station-dashboard", link: "/station-dashboard", dock: true },
-    {
+        {
             id: "2",
             icon: <Settings2 />,
             label: "City/Station Contacts",
@@ -32,14 +32,15 @@ const useAdminSidebarLinks = (role) => {
             subList: [
                 { id: "2-1", path: "/station-dashboard/city-station-contacts/local-representative", title: "Local Representative" },
                 { id: "2-2", path: "/station-dashboard/city-station-contacts/administrative", title: "Administrative" },
-                {id: "2-3", path: "/station-dashboard/city-station-contacts/station-indicator", title: "City/Station Indicator" },
-                {id: "2-4", path: "/station-dashboard/city-station-contacts/station-specialities", title: "City/Station Specialities" },
+                { id: "2-3", path: "/station-dashboard/city-station-contacts/station-indicator", title: "City/Station Indicator" },
+                { id: "2-4", path: "/station-dashboard/city-station-contacts/station-specialities", title: "City/Station Specialities" },
                 { id: "2-5", path: "/station-dashboard/city-station-contacts/industry-associate", title: "Industry Associations" },
                 { id: "2-6", path: "/station-dashboard/city-station-contacts/tourist-helpline", title: "Tourist Helpline" },
                 { id: "2-7", path: "/station-dashboard/city-station-contacts/govt-scheme", title: "Govt. Schemes / Policies" },
                 { id: "2-8", path: "/station-dashboard/city-station-contacts/investment-opportunities", title: "Investment Opportunities" },
             ],
         },
+        { id: "3", icon: <DepartureBoardTwoToneIcon />, link: "/station-dashboard/destinations", label: "Destinations", dock: true },
     ];
 
     // Links for Super Admin
@@ -69,7 +70,7 @@ const useAdminSidebarLinks = (role) => {
                 { id: "2-15", icon: <CoronavirusIcon />, path: "/admin/configuration/disease-type", title: "Disease Type" },
                 { id: "2-16", icon: <BloodtypeTwoToneIcon />, path: "/admin/configuration/blood-group-type", title: "Blood Group Type" },
                 { id: "2-17", icon: <VerifiedUserTwoToneIcon />, path: "/admin/configuration/user-kyc-type", title: "User KYC Type" },
-                { id: "2-18", icon: <LocationCityTwoToneIcon  />, path: "/admin/configuration/city-station", title: "City/Station" },
+                { id: "2-18", icon: <LocationCityTwoToneIcon />, path: "/admin/configuration/city-station", title: "City/Station" },
                 { id: "2-19", icon: <ConnectWithoutContactTwoToneIcon />, path: "/admin/configuration/social-media-asset", title: "Social Media Asset" },
                 { id: "2-20", icon: <VerifiedUserTwoToneIcon />, path: "/admin/configuration/establishment-type", title: "Establishment Type" },
                 { id: "2-21", icon: <LocalMallTwoToneIcon />, path: "/admin/configuration/shop-type", title: "Shop Type" },
@@ -80,9 +81,9 @@ const useAdminSidebarLinks = (role) => {
                 { id: "2-26", icon: <CurrencyRupeeTwoToneIcon />, path: "/admin/configuration/currency", title: "Currency" },
             ],
         },
-        { id: "3", icon: <VerifiedUserTwoToneIcon />, link: "/admin/station-admin", label: "Station Admin",dock:true },
-        { id: "4", icon: <VerifiedUserTwoToneIcon />, link: "/admin/zatra-admin", label: "Zatra Admin",dock:true },
-       
+        { id: "3", icon: <VerifiedUserTwoToneIcon />, link: "/admin/station-admin", label: "Station Admin", dock: true },
+        { id: "4", icon: <VerifiedUserTwoToneIcon />, link: "/admin/zatra-admin", label: "Zatra Admin", dock: true },
+
     ];
 
     if (role === "Station") {

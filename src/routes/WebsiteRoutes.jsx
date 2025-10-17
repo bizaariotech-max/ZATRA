@@ -15,7 +15,7 @@ const WebsiteRoutes = () => {
         <Route index element={<LandingPage />} />
         <Route path="ganga-darshan" element={<GangaDarshan />} />
         <Route path="religious" element={<Religious />} />
-         <Route path="about" element={<About />} />
+        <Route path="about" element={<About />} />
         <Route path="odop" element={<ODOP />} />
         {/* Catch-all */}
         <Route path="*" element={<ErrorPage />} />

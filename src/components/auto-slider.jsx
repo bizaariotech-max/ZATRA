@@ -133,7 +133,7 @@ export default function AutoSlider() {
                   aria-selected={isActive}
                   className={`relative transition-all duration-500 ease-in-out rounded-xl overflow-hidden flex-shrink-0
                   ${isActive
-                      ? "h-56 w-32 md:h-[400px] md:w-[370px] scale-105  shadow-lg"
+                      ? "h-56 w-32 md:h-[380px] md:w-[350px] scale-105  shadow-lg"
                       : "h-16 w-10 md:h-44 md:w-36 opacity-80 hover:opacity-100"
                     }`}
                 >
