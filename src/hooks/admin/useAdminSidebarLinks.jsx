@@ -1,9 +1,5 @@
-import { BrickWall, LayoutDashboard, Ruler, Settings2, Siren, Trello } from "lucide-react";
-import MedicalInformationTwoToneIcon from '@mui/icons-material/MedicalInformationTwoTone';
-import HealthAndSafetyTwoToneIcon from '@mui/icons-material/HealthAndSafetyTwoTone';
-import DepartureBoardTwoToneIcon from '@mui/icons-material/DepartureBoardTwoTone';
+import { BrickWall, LayoutDashboard, Ruler, Settings2, Trello } from "lucide-react";
 import VerifiedUserTwoToneIcon from '@mui/icons-material/VerifiedUserTwoTone';
-import MedicalServicesTwoToneIcon from '@mui/icons-material/MedicalServicesTwoTone';
 import FactoryTwoToneIcon from '@mui/icons-material/FactoryTwoTone';
 import HolidayVillageTwoToneIcon from '@mui/icons-material/HolidayVillageTwoTone';
 import BloodtypeTwoToneIcon from '@mui/icons-material/BloodtypeTwoTone';
@@ -19,6 +15,7 @@ import AppRegistrationTwoToneIcon from '@mui/icons-material/AppRegistrationTwoTo
 import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone';
 import FireTruckIcon from '@mui/icons-material/FireTruck';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
+import AssistantDirectionTwoToneIcon from '@mui/icons-material/AssistantDirectionTwoTone';
 const useAdminSidebarLinks = (role) => {
     // Links for Service Manager
     const serviceManagerLinks = [
@@ -40,7 +37,7 @@ const useAdminSidebarLinks = (role) => {
                 { id: "2-8", path: "/station-dashboard/city-station-contacts/investment-opportunities", title: "Investment Opportunities" },
             ],
         },
-        { id: "3", icon: <DepartureBoardTwoToneIcon />, link: "/station-dashboard/destinations", label: "Destinations", dock: true },
+        { id: "3", icon: <AssistantDirectionTwoToneIcon />, link: "/station-dashboard/destinations", label: "Destinations", dock: true },
     ];
 
     // Links for Super Admin

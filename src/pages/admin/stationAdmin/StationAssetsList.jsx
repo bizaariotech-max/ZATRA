@@ -1,53 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import SectionHeader from '../../../components/common/SectionHeader'
-import FormInput from '../../../components/common/FormInput'
-import FormButton from '../../../components/common/FormButton'
+import { useEffect, useState } from 'react'
 import { Checkbox, Chip, IconButton, Menu, MenuItem, Stack, } from '@mui/material'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
-import { __postApiData } from '../../../utils/api'
-import { __getCommenApiDataList } from '../../../utils/api/commonApi'
-import { useAuth } from '../../../context/AuthContext'
 import { DataGrid } from '@mui/x-data-grid'
-import { __formatDate } from '../../../utils/api/constantfun'
+import FormInput from '../../../components/common/FormInput'
+import FormButton from '../../../components/common/FormButton'
+import { useAuth } from '../../../context/AuthContext'
+import { __postApiData } from '../../../utils/api'
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import LoginListModal from '../../../components/admin/common/LoginListModal'
-import ServiceProvider from '../../../components/stations/ServiceProvider'
-import { useNavigate } from 'react-router-dom'
+import { __getCommenApiDataList } from '../../../utils/api/commonApi'
+import { useParams } from 'react-router-dom'
 
-
-const Destination = () => {
+const StationAssetsList = () => {
     const { userDetails } = useAuth();
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
     const [editId, setEditId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-    const [zatraDetails, setZatraDetails] = useState(null);
     const [menuRowId, setMenuRowId] = useState(null);
+    const {id} = useParams();
     const [dataList, setDataList] = useState({
         panchtatvaList: [],
         panchtatvaSubList: [],
         panchtatvaSubSubList: [],
         establishmentList: [],
+        shopList: [],
     });
-    const [openModal, setOpenModal] = useState({
-        type: null, // "zatra" or "enroute"
-        isOpen: false,
-    });
-    const navigate = useNavigate();
-    // ✅ Common open function
-    const handleOpenModal = (type) => {
-        setOpenModal({ type, isOpen: true });
+    const handleMenuOpen = (event, rowId) => {
+        setMenuAnchorEl(event.currentTarget);
+        setMenuRowId(rowId);
     };
 
-    // ✅ Common close function
-    const handleCloseModal = () => {
-        setOpenModal({ type: null, isOpen: false });
+    const handleMenuClose = () => {
+        setMenuAnchorEl(null);
+        setMenuRowId(null)
     };
-
-    const [list, setList] = useState({ data: [], loading: false });
-    const { panchtatvaList, panchtatvaSubList, panchtatvaSubSubList, establishmentList } = dataList;
-    const filterData = editId ? list?.data.filter((item) => item._id !== editId) : list?.data;
     const columns = [
         {
             field: "_id", headerName: "Sr. No", width: 90, headerClassName: "health-table-header-style", headerAlign: "center",
@@ -128,6 +117,32 @@ const Destination = () => {
             flex: 1,
             renderCell: (params) => <span className='px-1 py-4'>{params.row?.EstablishmentId?.lookup_value || "N/A"}</span>,
         },
+        {
+            field: "ShopType",
+            headerName: "Shop Type",
+            headerClassName: "health-table-header-style",
+            minWidth: 180,
+            flex: 1,
+            align: "center",
+            renderCell: (params) => (
+                Array.isArray(params.row?.ShopType) && params.row.ShopType.length > 0 ? (
+                    <Stack direction="row" flexWrap="wrap" gap={1}>
+                        {params.row.ShopType?.map((item, index) => (
+                            <Chip
+                                key={index}
+                                label={item?.lookup_value}
+                                color="success"
+                                size="small"
+                                variant="filled"
+                            />
+                        ))}
+                    </Stack>
+                ) : (
+                    <span>N/A</span>
+                )
+            ),
+            // renderCell: (params) => <span className='px-1 py-4'>{params.row?.NearbyAssetIds.length > 0 ? params.row?.NearbyAssetIds?.map((item) => item.AssetName).join(", ") : "N/A"}</span>,
+        },
         // {
         //     field: "actions",
         //     headerName: "Actions",
@@ -186,48 +201,14 @@ const Destination = () => {
                         >
                             Delete
                         </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setZatraDetails(params.row);
-                                handleOpenModal("asset_master2");
-                                handleMenuClose();
-                            }}
-                        >
-                            Admin Login
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                navigate(`/station-dashboard/add-assets/${params.row._id}`);
-                                handleMenuClose();
-                            }}
-                        >
-                            Add Assets
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                setZatraDetails(params.row);
-                                handleOpenModal("Service");
-                                handleMenuClose();
-                            }}
-                        >
-                            Service Provider
-                        </MenuItem>
                     </Menu>
                 </>
             ),
         }
     ]
-
-
-    const handleMenuOpen = (event, rowId) => {
-        setMenuAnchorEl(event.currentTarget);
-        setMenuRowId(rowId);
-    };
-
-    const handleMenuClose = () => {
-        setMenuAnchorEl(null);
-        setMenuRowId(null)
-    };
+    const [list, setList] = useState({ data: [], loading: false });
+    const { panchtatvaList, panchtatvaSubList, panchtatvaSubSubList, establishmentList, shopList } = dataList;
+    const filterData = editId ? list?.data.filter((item) => item._id !== editId && item.IsDestination ===true) : list?.data?.filter((item) => item.IsDestination === true);
     const formik = useFormik({
         initialValues: {
             AssetName: "",
@@ -236,10 +217,11 @@ const Destination = () => {
             PanchtatvaCategoryLevel2_Id: "",
             PanchtatvaCategoryLevel3_Id: "",
             EstablishmentId: "",
+            ShopType: []
         },
         onSubmit: async (values, { resetForm }) => {
             try {
-                const payload = { ...values, AssetId: editId || null, IsDestination: true, StationId: userDetails?.StationId };
+                const payload = { ...values, AssetId: editId || null, IsDestination: false, StationId: userDetails?.StationId, ParentAssetId: id, ZatraId: null };
                 setIsLoading(true);
                 const res = await __postApiData("/api/v1/admin/AddEditNewAsset", payload);
                 if (res.response && res.response.response_code === "200") {
@@ -258,7 +240,6 @@ const Destination = () => {
             }
         }
     })
-
     //========== function to update state dataList ============\\
     const updateState = (data) => setDataList((prevState) => ({ ...prevState, ...data }));
 
@@ -293,7 +274,7 @@ const Destination = () => {
             const response = await __postApiData("/api/v1/admin/GetAssetList", {
                 page: paginationModel.page + 1,
                 CityId: userDetails?.StationId,
-                IsDestination: true
+                IsDestination: false,
             });
             setList({
                 loading: false,
@@ -323,6 +304,11 @@ const Destination = () => {
         }
     }, [formik.values.PanchtatvaCategoryLevel2_Id]);
 
+    useEffect(() => {
+        if (formik.values.EstablishmentId) {
+            fetchData(["shop_type"], "shopList", formik.values.EstablishmentId);
+        }
+    }, [formik.values.EstablishmentId]);
     ///========== function to handle edit action ============\\
     const handleEdit = (row) => {
         setEditId(row._id);
@@ -333,18 +319,18 @@ const Destination = () => {
             PanchtatvaCategoryLevel2_Id: row?.PanchtatvaCategoryLevel2_Id?._id,
             PanchtatvaCategoryLevel3_Id: row?.PanchtatvaCategoryLevel3_Id?._id,
             EstablishmentId: row?.EstablishmentId?._id,
+            ShopType: row?.ShopType?.length > 0 ? row?.ShopType?.map((item) => item?._id) : [],
         });
     }
-
     return (
         <div className="p-4 bg-white">
             <SectionHeader
-                title="Destinations"
-                description="Add or update the required details for the destinations to keep records accurate and complete."
+                title="Station Assets Management"
+                description="Add or update the required details for the station assets to keep records accurate and complete."
             />
             <form
                 onSubmit={formik.handleSubmit}
-                className="flex flex-col gap-4 mt-8 shadow-card rounded-md p-4"
+                className="flex flex-col gap-4 shadow-card rounded-md p-4"
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormInput
@@ -435,6 +421,38 @@ const Destination = () => {
                         helperText={formik.touched.EstablishmentId && formik.errors.EstablishmentId}
                     />
                 </div>
+
+                {/* Approval Status */}
+                {shopList?.length > 0 && (<div className="flex flex-col">
+                    <label className="mb-1 font-semibold">Shop Type</label>
+                    <div className="flex gap-2 flex-wrap">
+                        {shopList?.map((item) => {
+                            const checkboxId = `shop-${item._id}`;
+
+                            return (
+                                <div key={item._id} className="flex items-center gap-2">
+                                    <Checkbox
+                                        id={checkboxId}
+                                        checked={formik.values?.ShopType?.includes(item._id)}
+                                        onChange={(e) => {
+                                            const updatedStatus = e.target.checked
+                                                ? [...formik.values.ShopType, item._id]
+                                                : formik.values.ShopType.filter((id) => id !== item._id);
+
+                                            formik.setFieldValue("ShopType", updatedStatus);
+                                        }}
+                                    />
+                                    <label
+                                        htmlFor={checkboxId}
+                                        className="cursor-pointer select-none"
+                                    >
+                                        {item?.lookup_value}
+                                    </label>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>)}
                 <div className="mt-4">
                     <FormButton disabled={isLoading}>
                         {isLoading ? (editId ? "Updating..." : "Saving...") : editId ? "Update" : "Save"}
@@ -443,7 +461,7 @@ const Destination = () => {
             </form>
             <div className="bg-white pb-2 rounded-xl my-16 ">
                 <DataGrid
-                    rows={list?.data}
+                    rows={list?.data?.filter((item) => item?.IsDestination === false) || []}
                     columns={columns}
                     loading={list?.loading}
                     autoHeight
@@ -462,33 +480,8 @@ const Destination = () => {
                     }}
                 />
             </div>
-
-            {openModal.type === "asset_master2" && (
-                <LoginListModal
-                    open={openModal.isOpen}
-                    handleClose={handleCloseModal}
-                    setZatraDetails={setZatraDetails}
-                    zatraDetails={zatraDetails}
-                    // reload={fetchZatraList}
-                    openModalLogin={openModal}
-                    title={"Admin Login"}
-                    LoginAssetId={zatraDetails?._id}
-                />
-            )}
-            {openModal.type === "Service" && (
-                <ServiceProvider
-                    open={openModal.isOpen}
-                    handleClose={handleCloseModal}
-                    setZatraDetails={setZatraDetails}
-                    zatraDetails={zatraDetails}
-                    // reload={fetchZatraList}
-                    openModalLogin={openModal}
-                    title={"Service Provider"}
-                    LoginAssetId={zatraDetails?._id}
-                />
-            )}
         </div>
     )
 }
 
-export default Destination
+export default StationAssetsList

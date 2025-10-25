@@ -12,6 +12,7 @@ import TouristHelpline from '../pages/station/cityStationContacts/TouristHelplin
 import GovtScheme from '../pages/station/cityStationContacts/GovtScheme'
 import InvestmentOpportunity from '../pages/station/cityStationContacts/InvestmentOpportunity'
 import Destination from '../pages/station/destination/Destination'
+import StationAssetsList from '../pages/admin/stationAdmin/StationAssetsList'
 
 const StationRoutes = () => {
     return (
@@ -32,6 +33,7 @@ const StationRoutes = () => {
                     <Route path="*" element={<ErrorPage />} />
                 </Route>
                 <Route path='destinations' element={<Destination />} />
+                <Route path='add-assets/:id' element={<StationAssetsList/>} />
                 {/* Catch-all inside admin */}
                 <Route path="*" element={<ErrorPage />} />
             </Route>
