@@ -58,6 +58,10 @@ const Login = () => {
                     const res = await __commonLogin(payload);
                     if (res?.response?.response_code === "200") {
                         login(res.data?.AuthToken, { ...res.data?.AdminData, Role: res.data?.AdminData?.LoginAssetType?.lookup_value });
+                        if( res.data?.AdminData?.LoginAssetType?.lookup_value === "Destination"){
+                            navigate("/destination-dashboard");
+                            return;
+                        }
                         navigate("/station-dashboard");
                     } else {
 

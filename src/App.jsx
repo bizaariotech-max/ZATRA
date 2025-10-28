@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import AdminRoutes from './routes/AdminRoutes'
 import StationRoutes from './routes/StationRoutes'
+import DestinationRoutes from './routes/DestinationRoutes'
 
 function App() {
 
@@ -20,6 +21,8 @@ function App() {
       {/* Dashboards */}
       <Route path="/admin/*" element={<AdminRoutes />} />
       <Route path="/station-dashboard/*" element={<StationRoutes />} />
+      <Route path="/destination-dashboard/*" element={<DestinationRoutes />} />
+
 
       {/*<Route path="/dashboard/*" element={<UserRoutes />} /> */}
     </Routes>

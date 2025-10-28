@@ -83,11 +83,19 @@ const useAdminSidebarLinks = (role) => {
 
     ];
 
+    //link for destination manager
+    const destinationManagerLinks = [
+        { id: "1", icon: <LayoutDashboard />, label: "Destination-dashboard", link: "/destination-dashboard", dock: true },
+    ];
+
     if (role === "Station") {
         return serviceManagerLinks;
     }
     if (role === "Super Admin") {
         return superAdminLinks;
+    }
+    if (role === "Destination") {
+        return destinationManagerLinks;
     }
     return [];
 

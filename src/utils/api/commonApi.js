@@ -6,7 +6,7 @@ const __getCommenApiDataList = async ({
     isShort,
 }) => {
     return __postApiData(`/api/v1/common/Lookuplist`, {
-        lookup_type: lookup_type.join(","),
+        lookup_type: lookup_type,
         parent_lookup_id: parent_lookup_id || null,
     })
         .then(res => {
