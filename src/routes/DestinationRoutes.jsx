@@ -3,12 +3,19 @@ import { Route, Routes } from 'react-router-dom'
 import ErrorPage from '../pages/ErrorPage'
 import AdminLayout from '../layouts/AdminLayout'
 import Home from '../pages/destination/home'
+import ProductOutlet from '../pages/destination/productMaster/ProductOutlet'
+import ProductList from '../pages/destination/productMaster/ProductList'
 
 const DestinationRoutes = () => {
   return (
      <Routes>
             <Route path="/" element={<AdminLayout />}>
                 <Route index element={<Home />} />
+                 <Route path="product-master/" element={<ProductOutlet  />}>
+                    <Route path="product-list" element={<ProductList />} />
+                    {/* Catch-all inside configuration */}
+                    <Route path="*" element={<ErrorPage />} />
+                </Route>
                 {/* Catch-all inside admin */}
                 <Route path="*" element={<ErrorPage />} />
             </Route>

@@ -86,6 +86,16 @@ const useAdminSidebarLinks = (role) => {
     //link for destination manager
     const destinationManagerLinks = [
         { id: "1", icon: <LayoutDashboard />, label: "Destination-dashboard", link: "/destination-dashboard", dock: true },
+       {
+            id: "2",
+            icon: <Settings2 />,
+            label: "Product Master",
+            // link: "/destination-dashboard/product-master",
+            dock: false,
+            subList: [
+                { id: "2-1", path: "/destination-dashboard/product-master/product-list", title: "Product List" },
+            ],
+        },
     ];
 
     if (role === "Station") {
