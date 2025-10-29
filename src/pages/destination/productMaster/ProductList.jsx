@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useFormik, FieldArray } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import SectionHeader from "../../../components/common/SectionHeader";
 import FormInput from "../../../components/common/FormInput";
@@ -14,6 +14,8 @@ import { __postApiData } from "../../../utils/api";
 import { DataGrid } from "@mui/x-data-grid";
 import DatagridRowAction from "../../../components/common/DatagridRowAction";
 import { Popup } from "../../../components/common/Popup";
+import ShortcutIcon from '@mui/icons-material/Shortcut';
+import { useNavigate } from "react-router-dom";
 
 // ✅ Validation Schema
 const ProductSchema = Yup.object({
@@ -52,6 +54,7 @@ const ProductList = () => {
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
   const [list, setList] = useState({ data: [], loading: false });
   const [editId, setEditId] = useState(null);
+  const navigate = useNavigate();
 
   const [dataList, setDataList] = useState({
     panchtatvaList: [],
@@ -141,6 +144,13 @@ const ProductList = () => {
       flex: 1,
       align: "center",
       renderCell: (params) => <span className='px-1 py-4'>{params.row?.ProductName || "N/A"}</span>,
+    },
+    {
+      field: "ProductSKU",
+      headerName: "Product SKU",
+      headerClassName: "health-table-header-style",
+      width: 200,
+      renderCell: (params) => <span>{params.row?.ProductSKU || "N/A"}</span>,
     },
     {
       field: "ShortDescription",
@@ -297,7 +307,18 @@ const ProductList = () => {
       filterable: false,
       disableColumnMenu: true,
       align: "center",
-      renderCell: (params) => <DatagridRowAction row={params.row} onEdit={() => handleEdit(params.row)} onDelete={() => handleDelete(params.row)} />,
+      renderCell: (params) => <>
+        <div className="flex gap-2">
+          <DatagridRowAction row={params.row} onEdit={() => handleEdit(params.row)} onDelete={() => handleDelete(params.row)} />
+          <IconButton
+            onClick={() => {
+              navigate(`/destination-dashboard/product-master/product-varient/${params.row._id}`);
+            }}
+          >
+            <ShortcutIcon color="warning" />
+          </IconButton>
+        </div>
+      </>
     }
   ]
 
