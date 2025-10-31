@@ -96,6 +96,7 @@ const useAdminSidebarLinks = (role) => {
                 { id: "2-1", path: "/destination-dashboard/product-master/product-list", title: "Product List" },
                 { id: "2-2", path: "/destination-dashboard/product-master/product-varient", title: "Product Varient" },
                 { id: "2-3", path: "/destination-dashboard/product-master/product-supplier", title: "Product Supplier" },
+                { id: "2-4", path: "/destination-dashboard/product-master/brand", title: "Brand Master" },
             ],
         },
     ];

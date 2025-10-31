@@ -7,6 +7,7 @@ import ProductOutlet from '../pages/destination/productMaster/ProductOutlet'
 import ProductList from '../pages/destination/productMaster/ProductList'
 import ProductVarient from '../pages/destination/productMaster/ProductVarient'
 import ProductSupplierMapping from '../pages/destination/productMaster/ProductSupplierMapping'
+import BrandMaster from '../pages/destination/productMaster/BrandMaster'
 
 const DestinationRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const DestinationRoutes = () => {
           <Route path="product-list" element={<ProductList />} />
           <Route path="product-varient/:id?" element={<ProductVarient />} />
           <Route path = "product-supplier" element={<ProductSupplierMapping />} />
+          <Route path='brand' element={<BrandMaster/>} />
 
           {/* Catch-all inside configuration */}
           <Route path="*" element={<ErrorPage />} />

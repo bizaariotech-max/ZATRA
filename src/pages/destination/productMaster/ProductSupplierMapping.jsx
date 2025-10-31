@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-    Button,
-    IconButton,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    Divider,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
 import { toast } from "react-toastify";
-import CloseIcon from "@mui/icons-material/Close";
 import FormInput from "../../../components/common/FormInput";
 import FormButton from "../../../components/common/FormButton";
 import { DataGrid } from "@mui/x-data-grid";
@@ -93,6 +82,10 @@ const ProductSupplierMapping = () => {
             headerName: "Actions",
             minWidth: 150,
             headerClassName: "health-table-header-style",
+            headerAlign: "center",
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
             align: "center",
             renderCell: (params) => (
                 <DatagridRowAction
