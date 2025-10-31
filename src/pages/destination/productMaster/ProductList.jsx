@@ -53,6 +53,7 @@ const ProductList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
   const [list, setList] = useState({ data: [], loading: false });
+  const [brandList, setBrandList] = useState({ data: [], loading: false });
   const [editId, setEditId] = useState(null);
   const navigate = useNavigate();
 
@@ -61,11 +62,10 @@ const ProductList = () => {
     panchtatvaSubList: [],
     panchtatvaSubSubList: [],
     StationsSpecialityList: [],
-    BrandList: [],
     CurrencyList: [],
     StationList: [],
   });
-  const { panchtatvaList, panchtatvaSubList, panchtatvaSubSubList, StationsSpecialityList, BrandList, CurrencyList, StationList } = dataList;
+  const { panchtatvaList, panchtatvaSubList, panchtatvaSubSubList, StationsSpecialityList, CurrencyList, StationList } = dataList;
   /// ========== function to get the list of product ============\\
   const getProductList = async () => {
     try {
@@ -84,6 +84,19 @@ const ProductList = () => {
     }
   }
 
+  const getBrandList = async () => {
+    try {
+      setBrandList((p) => ({ ...p, loading: true }));
+      const res = await __postApiData("/api/v1/admin/listBrands", { AssetId: userDetails?.LoginAssetId });
+      setBrandList({
+        loading: false,
+        data: res?.data?.list || [],
+      });
+    } catch (err) {
+      toast.error("Failed to fetch brands");
+      setBrandList({ loading: false, data: [] });
+    }
+  };
   //============ Formik initailization and submit function ============//
   const formik = useFormik({
     initialValues: {
@@ -151,6 +164,13 @@ const ProductList = () => {
       headerClassName: "health-table-header-style",
       width: 200,
       renderCell: (params) => <span>{params.row?.ProductSKU || "N/A"}</span>,
+    },
+    {
+      field: "BrandId",
+      headerName: "Brand",
+      headerClassName: "health-table-header-style",
+      width: 200,
+      renderCell: (params) => <span>{params.row?.BrandId?.BrandName || "N/A"}</span>,
     },
     {
       field: "ShortDescription",
@@ -355,10 +375,10 @@ const ProductList = () => {
   useEffect(() => {
     fetchData(["panchtatva_category"], "panchtatvaList");
     fetchData(["station_specialty_type"], "StationsSpecialityList");
-    fetchData(["brand_type"], "BrandList");
     fetchData(["currency"], "CurrencyList");
     fetchData(["station"], "StationList");
     getProductList();
+    getBrandList();
   }, []);
   useEffect(() => {
     if (formik.values.PanchtatvaCategoryLevel1_Id) {
@@ -430,7 +450,7 @@ const ProductList = () => {
             name="BrandId"
             type="select"
             value={values.BrandId}
-            options={BrandList}
+            options={brandList?.data?.map((item) => ({ _id: item?._id, lookup_value: item?.BrandName }))}
             onChange={handleChange}
             error={touched.BrandId && errors.BrandId}
             helperText={touched.BrandId && errors.BrandId}
