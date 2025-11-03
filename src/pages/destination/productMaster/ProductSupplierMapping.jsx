@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Checkbox, Chip, IconButton, Menu, MenuItem, Stack, Dialog, DialogContent, DialogTitle, Divider, } from '@mui/material'
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { toast } from "react-toastify";
 import FormInput from "../../../components/common/FormInput";
 import FormButton from "../../../components/common/FormButton";
 import { DataGrid } from "@mui/x-data-grid";
-import DatagridRowAction from "../../../components/common/DatagridRowAction";
 import { Popup } from "../../../components/common/Popup";
 import SectionHeader from "../../../components/common/SectionHeader";
 import { __getCommenApiDataList } from "../../../utils/api/commonApi";
 import { __postApiData } from "../../../utils/api";
 import { useAuth } from "../../../context/AuthContext";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ProductSupplierMapping = () => {
     const [editId, setEditId] = useState(null);
@@ -21,6 +23,24 @@ const ProductSupplierMapping = () => {
     const [stationList, setStationList] = useState([]);
     const [productList, setProductList] = useState([]);
     const [variantList, setVariantList] = useState([]);
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [inventoryDetails, setInventoryDetails] = useState({});
+    const [menuRowId, setMenuRowId] = useState(null);
+    const [supplierId, setSupplierId] = useState('');
+    const [availableStock, setAvailableStock] = useState('');
+    const [openGallery, setOpenGallery] = useState(false);
+    const handleCloseGallery = () => {
+        setOpenGallery(false);
+    };
+    const handleMenuOpen = (event, rowId) => {
+        setMenuAnchorEl(event.currentTarget);
+        setMenuRowId(rowId);
+    };
+
+    const handleMenuClose = () => {
+        setMenuAnchorEl(null);
+        setMenuRowId(null)
+    };
     // ✅ Columns for DataGrid
     const columns = [
         {
@@ -88,11 +108,56 @@ const ProductSupplierMapping = () => {
             disableColumnMenu: true,
             align: "center",
             renderCell: (params) => (
-                <DatagridRowAction
-                    row={params.row}
-                    onEdit={() => handleEdit(params.row)}
-                    onDelete={() => handleDelete(params.row)}
-                />
+                <>
+                    <IconButton
+                        aria-controls={menuAnchorEl ? "actions-menu" : undefined}
+                        aria-haspopup="true"
+                        onClick={(e) => handleMenuOpen(e, params.row._id)}
+                    >
+                        <MoreVertIcon sx={{ color: "gray" }} />
+                    </IconButton>
+
+                    <Menu
+                        id="actions-menu"
+                        anchorEl={menuAnchorEl}
+                        open={menuRowId === params.row._id}
+                        onClose={handleMenuClose}
+                        PaperProps={{
+                            sx: {
+                                borderRadius: "12px",
+                                boxShadow:
+                                    "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px",
+                            },
+                        }}
+                    >
+                        <MenuItem
+                            onClick={() => {
+                                handleEdit(params.row)
+                                handleMenuClose();
+                            }}
+                        >
+                            Edit
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                handleDelete(params.row)
+                                handleMenuClose();
+                            }}
+                        >
+                            Delete
+                        </MenuItem>
+                        <MenuItem
+                            onClick={async () => {
+                                setSupplierId(params.row._id);
+                                await getInventoryDetails(params.row._id);
+                                setOpenGallery(true);
+                                handleMenuClose();
+                            }}
+                        >
+                            Add Inventory
+                        </MenuItem>
+                    </Menu>
+                </>
             ),
         },
     ];
@@ -228,6 +293,51 @@ const ProductSupplierMapping = () => {
         }
     };
 
+    const handleAddAvailableStock = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await __postApiData("/api/v1/admin/SaveInventory", {
+                ProductSupplierMappingId: supplierId,
+                _id: inventoryDetails?._id || null,
+                AvailableStock: availableStock,
+            });
+
+            if (res?.response?.response_code === "200") {
+                toast.success("Inventory added successfully");
+                setAvailableStock("");
+                setOpenGallery(false);
+                getProductSupplierMappingList();
+            } else {
+                toast.error(res?.response?.response_message || "Failed to add inventory");
+            }
+        } catch (error) {
+            console.error("Failed to submit:", error);
+            toast.error("Something went wrong while saving inventory");
+        }
+    };
+
+    // 🟢 Get Inventory Details
+    const getInventoryDetails = async (id) => {
+        try {
+            const res = await __postApiData("/api/v1/admin/GetInventory", { ProductSupplierMappingId: id });
+            const data = res?.data || {};
+
+            setInventoryDetails(data);
+            setAvailableStock(data?.AvailableStock || "");
+        } catch (error) {
+            console.error("Failed to fetch inventory details:", error);
+            setInventoryDetails({});
+            setAvailableStock("");
+        }
+    };
+
+    // 🟢 Trigger when supplierId changes
+    useEffect(() => {
+        if (supplierId) {
+            getInventoryDetails(supplierId);
+        }
+    }, [supplierId]);
+
     return (
         <div className="p-4 bg-white">
             <SectionHeader title="Product Supplier Mapping" description="Map station, product, and product variant together." />
@@ -301,6 +411,41 @@ const ProductSupplierMapping = () => {
                     pageSizeOptions={[5, 10]}
                 />
             </div>
+            <Dialog open={openGallery} onClose={() => handleCloseGallery()} maxWidth="md" fullWidth>
+                <DialogTitle
+                    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                >
+                    <span>Add Available Stock</span>
+                    <IconButton onClick={handleCloseGallery}>
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+
+                <Divider />
+
+                <DialogContent>
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleAddAvailableStock(e);
+                        }}
+                    >
+                        <FormInput
+                            label="Available Stock"
+                            name="AvailableStock"
+                            placeholder="Enter Available Stock"
+                            value={availableStock}
+                            onChange={(e) => setAvailableStock(e.target.value)}
+                            inputMode="numeric"
+                        />
+                        <div className="mt-4">
+
+                            <FormButton type="submit">Save</FormButton>
+                        </div>
+                    </form>
+                </DialogContent>
+
+            </Dialog>
         </div>
     );
 };

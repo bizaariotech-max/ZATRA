@@ -86,7 +86,7 @@ const useAdminSidebarLinks = (role) => {
     //link for destination manager
     const destinationManagerLinks = [
         { id: "1", icon: <LayoutDashboard />, label: "Destination-dashboard", link: "/destination-dashboard", dock: true },
-       {
+        {
             id: "2",
             icon: <Settings2 />,
             label: "Product Master",
@@ -99,6 +99,7 @@ const useAdminSidebarLinks = (role) => {
                 { id: "2-4", path: "/destination-dashboard/product-master/brand", title: "Brand Master" },
             ],
         },
+         { id: "3", icon: <LayoutDashboard />, label: "Asset Master", link: "/destination-dashboard/asset-master", dock: true },
     ];
 
     if (role === "Station") {

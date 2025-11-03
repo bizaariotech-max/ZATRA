@@ -8,7 +8,7 @@ import ProductList from '../pages/destination/productMaster/ProductList'
 import ProductVarient from '../pages/destination/productMaster/ProductVarient'
 import ProductSupplierMapping from '../pages/destination/productMaster/ProductSupplierMapping'
 import BrandMaster from '../pages/destination/productMaster/BrandMaster'
-
+import AssetMaster from '../pages/destination/assetMaster/AssetMaster'
 const DestinationRoutes = () => {
   return (
     <Routes>
@@ -23,6 +23,7 @@ const DestinationRoutes = () => {
           {/* Catch-all inside configuration */}
           <Route path="*" element={<ErrorPage />} />
         </Route>
+        <Route path="/asset-master/" element={<AssetMaster />} />
         {/* Catch-all inside admin */}
         <Route path="*" element={<ErrorPage />} />
       </Route>

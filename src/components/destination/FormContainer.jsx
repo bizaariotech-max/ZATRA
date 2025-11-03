@@ -70,7 +70,7 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
         QRCode: item?.QRCode || "", // Qr Code Generation
         IndustrySectorId: item?.IndustrySectorId?._id || null, //Business Details
         SubIndustrySectorId: item?.SubIndustrySectorId?._id || null,
-        AssetType: item?.AssetType || null,
+        AssetType: item?.AssetType?._id || null,
         MinInvestments: item?.MinInvestments || "",
         AssuredRois: item?.AssuredRois || null,
         BrandsMapping: item?.BrandsMapping?.map((item) => item?._id) || [], //Business Mapping
@@ -132,8 +132,8 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
         NoOfVisitors: item?.NoOfVisitors || "",
         Advisory: item?.Advisory || null,
         AssetName: item?.AssetName || "",
-        IsDestination: item?.IsDestination || true,
-        NearbyAssetIds: item?.NearbyAssetIds?.map((ids) => ids._id) || [],
+        IsDestination: item?.IsDestination,
+        NearbyAssetIds: item?.NearbyAssetIds?.map((ids) => ids?.id) || [],
         PanchtatvaCategoryLevel1_Id: item?.PanchtatvaCategoryLevel1_Id?._id || null,
         PanchtatvaCategoryLevel2_Id: item?.PanchtatvaCategoryLevel2_Id?._id || null,
         PanchtatvaCategoryLevel3_Id: item?.PanchtatvaCategoryLevel3_Id?._id || null,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { use } from 'react'
 import SectionHeader from '../../../components/common/SectionHeader'
 import { useEffect, useState } from 'react'
 import { Checkbox, Chip, IconButton, Menu, MenuItem, Stack, } from '@mui/material'
@@ -11,16 +11,15 @@ import { useAuth } from '../../../context/AuthContext'
 import { __postApiData } from '../../../utils/api'
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { __getCommenApiDataList } from '../../../utils/api/commonApi'
-import { useParams } from 'react-router-dom'
+import LoginListModal from '../../../components/admin/common/LoginListModal'
 
-const StationAssetsList = () => {
+const AssetMaster = () => {
     const { userDetails } = useAuth();
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
     const [editId, setEditId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [menuRowId, setMenuRowId] = useState(null);
-    const { id } = useParams();
     const [dataList, setDataList] = useState({
         panchtatvaList: [],
         panchtatvaSubList: [],
@@ -28,6 +27,19 @@ const StationAssetsList = () => {
         establishmentList: [],
         shopList: [],
     });
+    const [zatraDetails, setZatraDetails] = useState(null);
+    const [openModal, setOpenModal] = useState({
+        type: null,
+        isOpen: false,
+    });
+    // ✅ Common open function
+    const handleOpenModal = (type) => {
+        setOpenModal({ type, isOpen: true });
+    };
+    // ✅ Common close function
+    const handleCloseModal = () => {
+        setOpenModal({ type: null, isOpen: false });
+    };
     const handleMenuOpen = (event, rowId) => {
         setMenuAnchorEl(event.currentTarget);
         setMenuRowId(rowId);
@@ -141,22 +153,7 @@ const StationAssetsList = () => {
                     <span>N/A</span>
                 )
             ),
-            // renderCell: (params) => <span className='px-1 py-4'>{params.row?.NearbyAssetIds.length > 0 ? params.row?.NearbyAssetIds?.map((item) => item.AssetName).join(", ") : "N/A"}</span>,
         },
-        // {
-        //     field: "actions",
-        //     headerName: "Actions",
-        //     flex: 1,
-        //     minWidth: 150,
-        //     headerClassName: "health-table-header-style",
-        //     headerAlign: "center",
-        //     sortable: false,
-        //     filterable: false,
-        //     disableColumnMenu: true,
-        //     align: "center",
-        //     renderCell: (params) => <DatagridRowAction row={params.row} onEdit={() => handleEdit(params.row)}
-        //         onDelete={() => console.log(params.row)} />,
-        // },
         {
             field: "action",
             headerName: "Action",
@@ -201,6 +198,15 @@ const StationAssetsList = () => {
                         >
                             Delete
                         </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setZatraDetails(params.row);
+                                handleOpenModal("asset_master2");
+                                handleMenuClose();
+                            }}
+                        >
+                            Admin Login
+                        </MenuItem>
                     </Menu>
                 </>
             ),
@@ -221,7 +227,7 @@ const StationAssetsList = () => {
         },
         onSubmit: async (values, { resetForm }) => {
             try {
-                const payload = { ...values, AssetId: editId || null, IsDestination: false, StationId: userDetails?.StationId, ParentAssetId: id, ZatraId: null };
+                const payload = { ...values, AssetId: editId || null, IsDestination: false, StationId: userDetails?.StationId, ParentAssetId: userDetails?.LoginAssetId, ZatraId: null };
                 setIsLoading(true);
                 const res = await __postApiData("/api/v1/admin/AddEditNewAsset", payload);
                 if (res.response && res.response.response_code === "200") {
@@ -480,8 +486,21 @@ const StationAssetsList = () => {
                     }}
                 />
             </div>
+            {openModal.type === "asset_master2" && (
+                <LoginListModal
+                    open={openModal.isOpen}
+                    handleClose={handleCloseModal}
+                    setZatraDetails={setZatraDetails}
+                    zatraDetails={zatraDetails}
+                    // reload={fetchZatraList}
+                    openModalLogin={openModal}
+                    title={"Admin Login"}
+                    LoginAssetId={zatraDetails?._id}
+                />
+            )}
+        
         </div>
     )
 }
 
-export default StationAssetsList
+export default AssetMaster
