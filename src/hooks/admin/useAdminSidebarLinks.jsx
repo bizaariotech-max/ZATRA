@@ -16,7 +16,9 @@ import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone';
 import FireTruckIcon from '@mui/icons-material/FireTruck';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 import AssistantDirectionTwoToneIcon from '@mui/icons-material/AssistantDirectionTwoTone';
+import { useAuth } from "../../context/AuthContext";
 const useAdminSidebarLinks = (role) => {
+    const { userDetails } = useAuth();
     // Links for Service Manager
     const serviceManagerLinks = [
         { id: "1", icon: <LayoutDashboard />, label: "Station-dashboard", link: "/station-dashboard", dock: true },
@@ -85,13 +87,14 @@ const useAdminSidebarLinks = (role) => {
 
     //link for destination manager
     const destinationManagerLinks = [
-        { id: "1", icon: <LayoutDashboard />, label: "Destination-dashboard", link: "/destination-dashboard", dock: true },
+        { id: "1", icon: <LayoutDashboard />, label: "Dashboard", link: "/destination-dashboard", dock: true, allowedRoles: ["Destination", "Asset", "Supplier"], },
         {
             id: "2",
             icon: <Settings2 />,
             label: "Product Master",
             // link: "/destination-dashboard/product-master",
             dock: false,
+            allowedRoles: ["Destination", "Asset", "Supplier"],
             subList: [
                 { id: "2-1", path: "/destination-dashboard/product-master/product-list", title: "Product List" },
                 { id: "2-2", path: "/destination-dashboard/product-master/product-varient", title: "Product Varient" },
@@ -99,7 +102,7 @@ const useAdminSidebarLinks = (role) => {
                 { id: "2-4", path: "/destination-dashboard/product-master/brand", title: "Brand Master" },
             ],
         },
-         { id: "3", icon: <LayoutDashboard />, label: "Asset Master", link: "/destination-dashboard/asset-master", dock: true },
+        { id: "3", icon: <LayoutDashboard />, label: "Asset Master", link: "/destination-dashboard/asset-master", dock: true, allowedRoles: ["Destination", "Asset",], },
     ];
 
     if (role === "Station") {
@@ -108,8 +111,15 @@ const useAdminSidebarLinks = (role) => {
     if (role === "Super Admin") {
         return superAdminLinks;
     }
-    if (role === "Destination") {
-        return destinationManagerLinks;
+
+    // ✅ Filter the list based on subRole
+    const filterByRole = (links, role) => {
+        if (!role) return links;
+        return links.filter(link => !link.allowedRoles || link.allowedRoles.includes(role));
+    };
+
+    if (["Destination", "Supplier", "Asset"].includes(role)) {
+        return filterByRole(destinationManagerLinks, userDetails?.subRole);
     }
     return [];
 

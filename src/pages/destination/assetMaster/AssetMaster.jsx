@@ -201,7 +201,7 @@ const AssetMaster = () => {
                         <MenuItem
                             onClick={() => {
                                 setZatraDetails(params.row);
-                                handleOpenModal("asset_master2");
+                                handleOpenModal("Supplier");
                                 handleMenuClose();
                             }}
                         >
@@ -486,7 +486,7 @@ const AssetMaster = () => {
                     }}
                 />
             </div>
-            {openModal.type === "asset_master2" && (
+            {openModal.type === "Supplier" && (
                 <LoginListModal
                     open={openModal.isOpen}
                     handleClose={handleCloseModal}

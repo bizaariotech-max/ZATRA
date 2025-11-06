@@ -495,7 +495,7 @@ const ProductVarient = () => {
                                 </div>
                             </>
                         )}
-                        {galleryData?.videos?.length > 0 ? (
+                        {galleryData?.videos?.length > 0 && (
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                     {galleryData.videos.map((video, i) => (
@@ -507,10 +507,6 @@ const ProductVarient = () => {
                                     ))}
                                 </div>
                             </>
-                        ) :(
-                            <div className="flex items-center justify-center h-32">
-                                <span className="text-gray-500">No videos found</span>
-                            </div>
                         )}
                     </div>
                 </DialogContent>

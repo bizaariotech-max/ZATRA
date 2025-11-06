@@ -198,8 +198,8 @@ const LoginListModal = ({ title, open, handleClose, LoginAssetId, openModalLogin
             <AddLogin
                 openModal={openModal}
                 handleCloseModal={handleCloseModal}
-                LoginAssetType={openModalLogin?.type === "admin" ? "68b93a4d257a82004b4388cb" : openModalLogin?.type === "asset_master2" ? "68b93a66257a82004b4388cd" : "68b93a5d257a82004b4388cc"}
-                LoginAssetRef={openModalLogin?.type === "admin" ? "zatra_master" : openModalLogin?.type === "asset_master2" ? "asset_master2" : "admin_lookups"}
+                LoginAssetType={openModalLogin?.type === "admin" ? "68b93a4d257a82004b4388cb" : openModalLogin?.type === "asset_master2" ? "68b93a66257a82004b4388cd" : openModalLogin?.type ==="Supplier"? "68b93a73257a82004b4388ce" : "68b93a5d257a82004b4388cc"}
+                LoginAssetRef={openModalLogin?.type === "admin" ? "zatra_master" :  ["asset_master2","Supplier"].includes(openModalLogin?.type) ? "asset_master2" : "admin_lookups"}
                 LoginAssetId={LoginAssetId}
                 editId={editId}
                 formData={formData}

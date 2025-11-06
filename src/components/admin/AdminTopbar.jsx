@@ -53,7 +53,9 @@ const AdminTopbar = ({ show, toggleShow }) => {
           <div className="items-center space-x-2 cursor-pointer hidden lg:flex">
             <Avatar alt="profile" className="w-8 h-8 rounded-full" />
             <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold text-primary">Hello, {userDetails?.Role}</span>
+<span className="text-sm font-semibold text-primary">
+  Hello, {userDetails?.Role} {userDetails?.subRole && `(${userDetails.subRole})`}
+</span>
               {/* <span className="text-xs text-muted-foreground">Doctor</span> */}
             </div>
           </div>
