@@ -13,7 +13,8 @@ import { __postApiData } from '../../../utils/api'
 const StationIndicator = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [indicatorTypeList, setIndicatorTypeList] = useState([]);
-    const [stationIndicator, setStationIndicator] = useState({
+    const [editId, setEditId] = useState(null);
+    const [indicator, setIndicator] = useState({
         loading: false,
         data: [],
     });
@@ -40,7 +41,7 @@ const StationIndicator = () => {
             headerClassName: "health-table-header-style",
             minWidth: 180,
             flex: 1,
-            renderCell: (params) => <span>{params.row?.lookup_value || "N/A"}</span>,
+            renderCell: (params) => <span>{params.row?.IndicatorType?.lookup_value || "N/A"}</span>,
         },
         {
             field: "UnitValue",
@@ -69,7 +70,7 @@ const StationIndicator = () => {
             filterable: false,
             disableColumnMenu: true,
             align: "center",
-            renderCell: (params) => <DatagridRowAction row={params.row} onEdit={() => console.log(params.row)}   // ✅ Pass handler
+            renderCell: (params) => <DatagridRowAction row={params.row} onEdit={() => handleEdit(params.row)}   // ✅ Pass handler
                 onDelete={() => console.log(params.row)} />,
         }
     ];
@@ -80,13 +81,14 @@ const StationIndicator = () => {
             Value: ""
         },
         onSubmit: async (values, { resetForm }) => {
-            const payload = { ...values, StationId: userDetails?.StationId };
+            const payload = { ...values,_id:editId || null, StationId: userDetails?.StationId };
             try {
                 setIsLoading(true);
                 const res = await __postApiData("/api/v1/admin/SaveCityIndicator", payload);
                 if (res.response && res.response.response_code === "200") {
                     toast.success("Station Indicator added successfully");
                     resetForm();
+                    getStationIndicator();
                 } else {
                     toast.error(res.response.response_message || "Failed to add Station Indicator");
                 }
@@ -110,32 +112,42 @@ const StationIndicator = () => {
             console.error(`Error fetching ${stateKey}:`, error);
         }
     }
-    // const getStationIndicator = async () => {
-    //     try {
-    //         setStationIndicator((prev) => ({ ...prev, loading: true }));
+    const getStationIndicator = async () => {
+        try {
+            setIndicator((prev) => ({ ...prev, loading: true }));
 
-    //         // ✅ Call your API (replace URL with your actual endpoint)
-    //         const response = await axios.get("/api/v1/admin/getStationIndicatorList");
-    //         console.log("API Response:", response);
-    //         // ✅ Update state with API data
-    //         setStationIndicator({
-    //             loading: false,
-    //             data: response.data?.data || [], // assuming API response has a 'data' field
-    //         });
-    //     } catch (error) {
-    //         console.error("Error fetching station indicators:", error);
-    //         setStationIndicator({
-    //             loading: false,
-    //             data: [],
-    //         });
-    //     }
-    // };
+            // ✅ Call your API (replace URL with your actual endpoint)
+            const response = await __postApiData("/api/v1/admin/CityIndicatorList",{
+                StationId: userDetails?.StationId
+            });
+            console.log("Station Indicators API response:", response?.data?.list);
+            // ✅ Update state with API data
+            setIndicator({
+                loading: false,
+                data: response?.data?.list || [], // assuming API response has a 'data' field
+            });
+        } catch (error) {
+            console.error("Error fetching station indicators:", error);
+            setIndicator({
+                loading: false,
+                data: [],
+            });
+        }
+    };
 
 
     useEffect(() => {
         fetchData(['station_indicator_type'],);
-        // getStationIndicator()
+        getStationIndicator()
     }, []);
+    const handleEdit = (row) => {
+        setEditId(row?._id);
+        formik.setValues({
+            IndicatorType: row?.IndicatorType?._id || "",
+            UnitValue: row?.UnitValue || "",
+            Value: row?.Value || ""
+        });
+    }
     return (
         <div className="p-4 bg-white">
             <SectionHeader
@@ -193,9 +205,9 @@ const StationIndicator = () => {
                     </FormButton>
                 </div>
             </form>
-            {/* <div className="bg-white pb-2 rounded-xl my-16 ">
+            <div className="bg-white pb-2 rounded-xl my-16 ">
                 <DataGrid
-                    rows={indicatorList}
+                    rows={indicator.data}
                     columns={columns}
                     loading={isLoading}
                     autoHeight
@@ -205,7 +217,7 @@ const StationIndicator = () => {
                     onPaginationModelChange={setPaginationModel}
                     pageSizeOptions={[5, 10]}
                 />
-            </div> */}
+            </div>
         </div>
     )
 }

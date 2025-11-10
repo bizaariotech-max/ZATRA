@@ -31,6 +31,7 @@ import CallActionType from "../pages/admin/configrations/CallActionType";
 import Currency from "../pages/admin/configrations/Currency";
 import StationAdmin from "../pages/admin/stationAdmin/StationAdmin";
 import ZatraList from "../pages/admin/zatra/ZatraList";
+import IntigatorType from "../pages/admin/configrations/IntigatorType";
 
 const AdminRoutes = () => (
   <Routes>
@@ -63,6 +64,7 @@ const AdminRoutes = () => (
         <Route path="call-to-action-type" element={<CallActionType />} />
         <Route path="service-type" element={<ServiceType />} />
         <Route path="currency" element={<Currency />} />
+        <Route path="indigator-type" element={<IntigatorType />} />
 
 
         {/* Catch-all inside configuration */}

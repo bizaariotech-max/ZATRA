@@ -168,6 +168,7 @@ const ProductVarient = () => {
         initialValues: {
             ProductId: id ? id : "",
             Color: "",
+            VariantInventory:"",
             Size: "",
             PictureGallery: [null],
             VideoGallery: [null],
@@ -176,8 +177,8 @@ const ProductVarient = () => {
         enableReinitialize: true,
         validationSchema: Yup.object({
             ProductId: Yup.string().required("Product is required"),
-            Color: Yup.string().required("Color is required"),
-            Size: Yup.string().required("Size is required"),
+            // Color: Yup.string().required("Color is required"),
+            // Size: Yup.string().required("Size is required"),
         }),
         onSubmit: async (values, { resetForm }) => {
             try {
@@ -291,6 +292,7 @@ const ProductVarient = () => {
         setFieldValue("PictureGallery", item.PictureGallery);
         setFieldValue("VideoGallery", item.VideoGallery);
         setFieldValue("IsActive", item.IsActive);
+        setFieldValue("VariantInventory", item.VariantInventory);
     };
 
     //============ function to handle Delete ===========
@@ -353,6 +355,17 @@ const ProductVarient = () => {
                         onBlur={handleBlur}
                         error={touched.Size && Boolean(errors.Size)}
                         helperText={touched.Size && errors.Size}
+                    />
+                     <FormInput
+                        label="VariantInventory"
+                        placeholder="Enter Variant Inventory"
+                        name="VariantInventory"
+                        inputMode={"numeric"}
+                        value={values.VariantInventory}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={touched.VariantInventory && Boolean(errors.VariantInventory)}
+                        helperText={touched.VariantInventory && errors.VariantInventory}
                     />
                 </div>
 

@@ -112,6 +112,21 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
                 FeeCategory: null,
                 Amount: "",
             }],
+        AmenitiesProvided: item?.AmenitiesProvided || [],
+        SpecialDarshansFeeCategoryAmount:item?.SpecialDarshansFeeCategoryAmount?.length > 0 ? item?.SpecialDarshansFeeCategoryAmount?.map((item) => ({
+                FeeCategory: item?.FeeCategory,
+                Amount: item?.Amount,
+            })) : [{
+                FeeCategory: null,
+                Amount: "",
+            }],
+         CameraAndShootingFeeCategoryAmount:item?.CameraAndShootingFeeCategoryAmount?.length > 0 ? item?.CameraAndShootingFeeCategoryAmount?.map((item) => ({
+                FeeCategory: item?.FeeCategory,
+                Amount: item?.Amount,
+            })) : [{
+                FeeCategory: null,
+                Amount: "",
+            }],
         FeeCollectionLink: item?.FeeCollectionLink || "",
         PaymentOrCode: item?.PaymentOrCode || "",
         AccountName: item?.AccountName || "",
@@ -532,6 +547,9 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
                         BankName: formData.BankName,
                         IFSCcode: formData.IFSCcode,
                         AccountNumber: formData.AccountNumber,
+                        AmenitiesProvided: formData.AmenitiesProvided,
+                        SpecialDarshansFeeCategoryAmount: formData.SpecialDarshansFeeCategoryAmount,
+                        CameraAndShootingFeeCategoryAmount: formData.CameraAndShootingFeeCategoryAmount,
                     }}
                         onChange={(updatedRegistrationFee) => updateState(updatedRegistrationFee)}
                     />

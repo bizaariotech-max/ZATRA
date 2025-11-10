@@ -78,6 +78,7 @@ const useAdminSidebarLinks = (role) => {
                 { id: "2-24", icon: <SupportAgentTwoToneIcon />, path: "/admin/configuration/call-to-action-type", title: "Call To Action Type" },
                 { id: "2-25", icon: <VerifiedUserTwoToneIcon />, path: "/admin/configuration/service-type", title: "Service Type" },
                 { id: "2-26", icon: <CurrencyRupeeTwoToneIcon />, path: "/admin/configuration/currency", title: "Currency" },
+                { id: "2-27", icon: <ConnectWithoutContactTwoToneIcon />, path: "/admin/configuration/indigator-type", title: "Indicator Type" },
             ],
         },
         { id: "3", icon: <VerifiedUserTwoToneIcon />, link: "/admin/station-admin", label: "Station Admin", dock: true },
