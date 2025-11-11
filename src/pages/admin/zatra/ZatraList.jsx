@@ -231,7 +231,7 @@ const ZatraList = () => {
             StartDate: "",
             EndDate: "",
         },
-        validationSchema,
+        // validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
                 setIsLoading(true);
@@ -253,7 +253,12 @@ const ZatraList = () => {
         },
     });
 
-
+  useEffect(() => {
+        if (formik.values.IsOngoing === true) {
+            formik.setFieldValue("StartDate", "");
+            formik.setFieldValue("EndDate", "");
+        }
+    }, [formik.values.IsOngoing]);
 
     // ✅ File upload handler
     const handleFileUpload = async (e) => {
@@ -402,29 +407,30 @@ const ZatraList = () => {
                         <span className="text-red-500 text-sm">{formik.errors.IsOngoing}</span>
                     )}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Dates */}
-                    <FormInput
-                        label="Start Date"
-                        type="date"
-                        name="StartDate"
-                        value={formik.values.StartDate}
-                        onChange={formik.handleChange}
-                        error={formik.touched.StartDate && formik.errors.StartDate}
-                        helperText={formik.touched.StartDate && formik.errors.StartDate}
-                    />
+                {formik.values.IsOngoing === false && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormInput
+                            label="Start Date"
+                            type="date"
+                            name="StartDate"
+                            value={formik.values.StartDate}
+                            onChange={formik.handleChange}
+                            error={formik.touched.StartDate && formik.errors.StartDate}
+                            helperText={formik.touched.StartDate && formik.errors.StartDate}
+                        />
 
-                    <FormInput
-                        label="End Date"
-                        type="date"
-                        name="EndDate"
-                        value={formik.values.EndDate}
-                        onChange={formik.handleChange}
-                        error={formik.touched.EndDate && formik.errors.EndDate}
-                        helperText={formik.touched.EndDate && formik.errors.EndDate}
-                    />
+                        <FormInput
+                            label="End Date"
+                            type="date"
+                            name="EndDate"
+                            value={formik.values.EndDate}
+                            onChange={formik.handleChange}
+                            error={formik.touched.EndDate && formik.errors.EndDate}
+                            helperText={formik.touched.EndDate && formik.errors.EndDate}
+                        />
+                    </div>
+                )}
 
-                </div>
                 {/* Submit Button */}
                 <div className="mt-4">
                     <FormButton disabled={isLoading}>

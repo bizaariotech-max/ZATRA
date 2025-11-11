@@ -35,13 +35,14 @@ const SocialMedia = ({ open, onClose, zatraDetails, setZatraDetails, reload }) =
     }, []);
     const formik = useFormik({
         initialValues: {
-            ZatraSocialMedia: [
+            ZatraSocialMedia:zatraDetails?.ZatraSocialMedia ? zatraDetails?.ZatraSocialMedia?.map(item => ({ SocialMediaId: item.SocialMediaId?._id, URL: item.URL })) :   [
                 {
                     SocialMediaId: "",
                     URL: "",
                 },
             ],
         },
+        enableReinitialize: true,
         onSubmit: async (values) => {
             try {
                 const payload = {
