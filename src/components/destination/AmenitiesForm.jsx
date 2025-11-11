@@ -7,7 +7,7 @@ const AmenitiesForm = ({ initialAmenities = [], onChange }) => {
   const [amenities, setAmenities] = useState(
     initialAmenities?.length > 0
       ? initialAmenities.map((item) => ({
-        AmenityId: item?._id || item?.AmenityId || "",
+        AmenityId: item?.AmenityId,
         GeoLocation:
           item?.GeoLocation?.coordinates?.join(", ") ||
           item?.GeoLocation ||
@@ -45,7 +45,7 @@ const AmenitiesForm = ({ initialAmenities = [], onChange }) => {
   // ✅ Sync with parent
   useEffect(() => {
     const formatted = amenities.map((a) => ({
-      _id: a.AmenityId,
+      AmenityId: a?.AmenityId,
       GeoLocation: {
         type: "Point",
         coordinates:
@@ -54,6 +54,8 @@ const AmenitiesForm = ({ initialAmenities = [], onChange }) => {
             : [0, 0],
       },
     }));
+    console.log("Formatted Amenities:", formatted);
+    console.log("Raw Amenities State:", amenities);
     onChange({ Amenities: formatted });
   }, [amenities]);
 

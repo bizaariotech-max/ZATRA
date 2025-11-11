@@ -96,8 +96,8 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
         YouTubeChannelUrl: item?.YouTubeChannelUrl || "",
         WhatsAppCommunityUrl: item?.WhatsAppCommunityUrl || "",
         TelegramUrl: item?.TelegramUrl || "",
-        Amenities: item?.Amenities?.length > 0 ? item?.Amenities?.map((item) => ({ _id: item?._id, GeoLocation: item?.GeoLocation })) : [{ //Amenities
-            _id: null,
+        Amenities: item?.Amenities?.length > 0 ? item?.Amenities?.map((item) => ({ AmenityId: item?.AmenityId?._id, GeoLocation: item?.GeoLocation })) : [{ //Amenities
+            AmenityId: null,
             GeoLocation: {
                 type: "Point",
                 coordinates: [0, 0],
@@ -114,14 +114,14 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
             }],
         AmenitiesProvided: item?.AmenitiesProvided || [],
         SpecialDarshansFeeCategoryAmount:item?.SpecialDarshansFeeCategoryAmount?.length > 0 ? item?.SpecialDarshansFeeCategoryAmount?.map((item) => ({
-                FeeCategory: item?.FeeCategory,
+                FeeCategory: item?.FeeCategory?._id,
                 Amount: item?.Amount,
             })) : [{
                 FeeCategory: null,
                 Amount: "",
             }],
          CameraAndShootingFeeCategoryAmount:item?.CameraAndShootingFeeCategoryAmount?.length > 0 ? item?.CameraAndShootingFeeCategoryAmount?.map((item) => ({
-                FeeCategory: item?.FeeCategory,
+                FeeCategory: item?.FeeCategory?._id,
                 Amount: item?.Amount,
             })) : [{
                 FeeCategory: null,
