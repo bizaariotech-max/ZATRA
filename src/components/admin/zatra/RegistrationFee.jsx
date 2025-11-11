@@ -53,10 +53,10 @@ const RegistrationFee = ({ open, onClose, zatraDetails, setZatraDetails, reload 
 
     const formik = useFormik({
         initialValues: {
-            RegistrationFees: zatraDetails?.RegistrationFees?.length>0 ? zatraDetails?.RegistrationFees?.map((item) => ({ FeeCategory: item.FeeCategory?._id, FeeAmount: item.FeeAmount })) : [{ FeeCategory: "", FeeAmount: "" }],
-            AmenitiesProvided:zatraDetails?.AmenitiesProvided?.length>0 ? zatraDetails?.AmenitiesProvided : [""],
-            SpecialDarshansFeeCategoryAmount: zatraDetails?.SpecialDarshansFeeCategoryAmount?.length>0 ? zatraDetails?.SpecialDarshansFeeCategoryAmount?.map((item) => ({ FeeCategory: item.FeeCategory?._id, Amount: item.Amount })) :[{ FeeCategory: "", Amount: "" }],
-            CameraAndShootingFeeCategoryAmount:zatraDetails?.CameraAndShootingFeeCategoryAmount?.length>0 ? zatraDetails?.CameraAndShootingFeeCategoryAmount?.map((item) => ({ FeeCategory: item.FeeCategory?._id, Amount: item.Amount })) : [{ FeeCategory: "", Amount: "" }],
+            RegistrationFees: zatraDetails?.RegistrationFees?.length > 0 ? zatraDetails?.RegistrationFees?.map((item) => ({ FeeCategory: item.FeeCategory?._id, FeeAmount: item.FeeAmount })) : [{ FeeCategory: "", FeeAmount: "" }],
+            AmenitiesProvided: zatraDetails?.AmenitiesProvided?.length > 0 ? zatraDetails?.AmenitiesProvided : [""],
+            SpecialDarshansFeeCategoryAmount: zatraDetails?.SpecialDarshansFeeCategoryAmount?.length > 0 ? zatraDetails?.SpecialDarshansFeeCategoryAmount?.map((item) => ({ FeeCategory: item.FeeCategory?._id, Amount: item.Amount })) : [{ FeeCategory: "", Amount: "" }],
+            CameraAndShootingFeeCategoryAmount: zatraDetails?.CameraAndShootingFeeCategoryAmount?.length > 0 ? zatraDetails?.CameraAndShootingFeeCategoryAmount?.map((item) => ({ FeeCategory: item.FeeCategory?._id, Amount: item.Amount })) : [{ FeeCategory: "", Amount: "" }],
         },
         enableReinitialize: true,
         onSubmit: async (values) => {
@@ -174,7 +174,7 @@ const RegistrationFee = ({ open, onClose, zatraDetails, setZatraDetails, reload 
 
             <div className="flex justify-start">
                 <Button
-                    variant="outlined"
+                    variant="contained"
                     color="success"
                     onClick={() => handleAddFee(sectionKey)}
                 >
@@ -207,7 +207,7 @@ const RegistrationFee = ({ open, onClose, zatraDetails, setZatraDetails, reload 
             </div>
 
             <div className="flex justify-start">
-                <Button variant="outlined" color="success" onClick={handleAddAmenity}>
+                <Button variant="contained" color="success" onClick={handleAddAmenity}>
                     + Add More
                 </Button>
             </div>
@@ -254,15 +254,11 @@ const RegistrationFee = ({ open, onClose, zatraDetails, setZatraDetails, reload 
             {/* Form */}
             <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 p-4">
                 <DialogContent className="space-y-4">
-                    {renderFeeSection("Special Darshans Fee Details", "SpecialDarshansFeeCategoryAmount")}
-                    {renderFeeSection("Camera and Shooting Fee Details", "CameraAndShootingFeeCategoryAmount")}
-                    {renderAmenitiesSection()}
-
                     <label className="block text-lg font-semibold mb-2">Registration Fees</label>
 
-                    {formik.values.RegistrationFees.map((item, index) => (
+                    {formik.values?.RegistrationFees?.map((item, index) => (
                         <div key={index} className="border p-4 rounded-lg relative">
-                            {index > 0 && (
+                            {formik.values?.RegistrationFees?.length > 1 && (
                                 <IconButton
                                     onClick={() => handleRemove(index)}
                                     style={{ position: "absolute", top: 0, right: 10, color: "red" }}
@@ -298,9 +294,14 @@ const RegistrationFee = ({ open, onClose, zatraDetails, setZatraDetails, reload 
                         </div>
                     ))}
 
-                    <Button variant="outlined" size="medium" onClick={handleAddMore} className="mt-2">
+                    <Button variant="contained" size="medium" onClick={handleAddMore} color="success" className="mt-2">
                         + Add More
                     </Button>
+                    {renderFeeSection("Special Darshans Fee Details", "SpecialDarshansFeeCategoryAmount")}
+                    {renderFeeSection("Camera and Shooting Fee Details", "CameraAndShootingFeeCategoryAmount")}
+                    {renderAmenitiesSection()}
+
+
                 </DialogContent>
 
                 <div className="flex justify-end gap-3 px-6 pb-4">

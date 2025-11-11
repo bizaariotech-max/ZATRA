@@ -128,7 +128,7 @@ const SocialMedia = ({ open, onClose, zatraDetails, setZatraDetails, reload }) =
 
                     {formik.values.ZatraSocialMedia.map((item, index) => (
                         <div key={index} className="border p-4 rounded-lg relative">
-                            {index > 0 && (
+                            {formik.values?.ZatraSocialMedia?.length > 1 && (
                                 <IconButton
                                     onClick={() => handleRemove(index)}
                                     style={{ position: "absolute", top: 0, right: 10, color: 'red' }}
@@ -162,10 +162,11 @@ const SocialMedia = ({ open, onClose, zatraDetails, setZatraDetails, reload }) =
                     ))}
 
                     <Button
-                        variant="outlined"
+                        variant="contained"
                         size="medium"
                         onClick={handleAddMore}
                         className="mt-2"
+                        color="success"
                     >
                         + Add More
                     </Button>
