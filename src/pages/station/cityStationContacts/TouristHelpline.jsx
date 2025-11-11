@@ -15,9 +15,9 @@ const validationSchema = Yup.object({
     ContactPersonName: Yup.string().required('Contact Person Name is required'),
     HelplineNumber: Yup.string().required('Helpline Number is required'),
     Email: Yup.string().email('Invalid email').required('Email is required'),
-    AddressLine1: Yup.string().required('Address Line 1 is required'),
+    AddressLine1: Yup.string().nullable(),
     AddressLine2: Yup.string().nullable(),
-    PostalCode: Yup.string().required('Postal Code is required'),
+    PostalCode: Yup.string().nullable(),
 });
 
 const TouristHelpline = () => {

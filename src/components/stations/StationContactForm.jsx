@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import FormInput from '../common/FormInput'
 import { useFormik } from 'formik'
 import { __postApiData, BASE_URL } from '../../utils/api'
@@ -8,26 +8,21 @@ import { TextField } from '@mui/material'
 import FormButton from '../common/FormButton'
 import { useAuth } from '../../context/AuthContext'
 
-const StationContactForm = ({ type,fetchData }) => {
+const StationContactForm = ({ type, fetchData }) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false); // 🔹 for image upload state
+    const fileInputRef = useRef(null); // 🔹 for resetting the file input
     const { userDetails } = useAuth();
+
     let options = [];
     if (type === "localRepresentative") {
-        options = [{
-            _id: "687756d4aa2e78aefc414a51",
-            lookup_value: "Local Representative",
-        }]
+        options = [{ _id: "687756d4aa2e78aefc414a51", lookup_value: "Local Representative" }];
     } else if (type === "administrator") {
-        options = [{
-            _id: "687756e5aa2e78aefc414a53",
-            lookup_value: "Civic Administration",
-        }]
+        options = [{ _id: "687756e5aa2e78aefc414a53", lookup_value: "Civic Administration" }];
     } else {
-        options = [{
-            _id: "687a18fb665fcc3a0f4626c2",
-            lookup_value: "Industry Association",
-        }]
+        options = [{ _id: "687a18fb665fcc3a0f4626c2", lookup_value: "Industry Association" }];
     }
+
     const formik = useFormik({
         initialValues: {
             ContactTypeId: "",
@@ -51,52 +46,58 @@ const StationContactForm = ({ type,fetchData }) => {
                     toast.success("Data added successfully");
                     resetForm();
                     fetchData();
+
+                    // 🔹 Reset the file input after submit
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = "";
+                    }
                 } else {
                     toast.error(res.response.response_message || "Failed to add Data");
                 }
-                setIsLoading(false);
             } catch (err) {
                 console.log(err?.response?.data?.message || "Failed to add Data");
                 toast.error("Failed to add Data");
+            } finally {
                 setIsLoading(false);
             }
         }
-    })
+    });
+
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
-        if (!file) return alert("Please select a file first");
+        if (!file) return toast.error("Please select a file first");
 
         try {
+            setIsUploading(true); // 🔹 start uploading
             const formData = new FormData();
             formData.append("file", file);
 
             const response = await axios.post(
                 `${BASE_URL}/api/v1/common/AddImage`,
                 formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
+                { headers: { "Content-Type": "multipart/form-data" } }
             );
 
             if (response?.data?.response?.response_code === "200") {
                 formik.setFieldValue("Image", response.data?.data[0]?.full_URL || "");
+                toast.success("Image uploaded successfully");
             } else {
                 toast.error(response?.data?.response?.response_message || "File upload failed");
             }
         } catch (error) {
             console.error("File upload failed:", error);
             toast.error("Error uploading file");
+        } finally {
+            setIsUploading(false); // 🔹 stop uploading
         }
     };
+
     return (
         <form
             onSubmit={formik.handleSubmit}
             className="flex flex-col gap-4 mt-8 shadow-card rounded-md p-4"
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Zatra Name */}
                 <FormInput
                     label="Contact Type"
                     name="ContactTypeId"
@@ -195,6 +196,7 @@ const StationContactForm = ({ type,fetchData }) => {
                         className="custom-input"
                         inputProps={{ accept: "image/*" }}
                         onChange={handleFileUpload}
+                        inputRef={fileInputRef} // 🔹 attach ref
                         error={formik.touched.Image && Boolean(formik.errors.Image)}
                         helperText={formik.touched.Image && formik.errors.Image}
                     />
@@ -209,9 +211,14 @@ const StationContactForm = ({ type,fetchData }) => {
                     )}
                 </div>
             </div>
+
             <div className="mt-4">
-                <FormButton disabled={isLoading}>
-                    {isLoading ? "Saving..." : "Save"}
+                <FormButton disabled={isLoading || isUploading}>
+                    {isUploading
+                        ? "Uploading Image..."
+                        : isLoading
+                        ? "Saving..."
+                        : "Save"}
                 </FormButton>
             </div>
         </form>
