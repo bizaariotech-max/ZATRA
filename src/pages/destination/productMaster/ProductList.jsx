@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
+import { setIn, useFormik } from "formik";
 import * as Yup from "yup";
 import SectionHeader from "../../../components/common/SectionHeader";
 import FormInput from "../../../components/common/FormInput";
@@ -16,6 +16,7 @@ import DatagridRowAction from "../../../components/common/DatagridRowAction";
 import { Popup } from "../../../components/common/Popup";
 import ShortcutIcon from '@mui/icons-material/Shortcut';
 import { useNavigate } from "react-router-dom";
+import MyEditor from "../../../components/textEditor/MyEditor";
 
 // ✅ Validation Schema
 const ProductSchema = Yup.object({
@@ -55,6 +56,7 @@ const ProductList = () => {
   const [list, setList] = useState({ data: [], loading: false });
   const [brandList, setBrandList] = useState({ data: [], loading: false });
   const [editId, setEditId] = useState(null);
+  const [infotxt, setInfoTxt] = useState('');
   const navigate = useNavigate();
 
   const [dataList, setDataList] = useState({
@@ -124,6 +126,7 @@ const ProductList = () => {
           resetForm();
           setEditId(null);
           getProductList();
+          setInfoTxt("");
         } else {
           console.log(res);
           toast.error(res.response?.response_message || res.response?.response_message?.error || "Failed to add Data");
@@ -425,6 +428,10 @@ const ProductList = () => {
     }
   };
 
+   useEffect(() => {
+          formik.setFieldValue('LongDescription', infotxt);
+      }, [infotxt]);
+
   return (
     <div className="p-4 bg-white">
       <SectionHeader
@@ -469,18 +476,17 @@ const ProductList = () => {
             error={touched.ShortDescription && errors.ShortDescription}
             helperText={touched.ShortDescription && errors.ShortDescription}
           />
-          <FormInput
-            label="Long Description"
-            multiline
-            rows={3}
-            placeholder={"Enter Long description"}
-            name="LongDescription"
-            value={values.LongDescription}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.LongDescription && errors.LongDescription}
-            helperText={touched.LongDescription && errors.LongDescription}
-          />
+          <div className='flex gap-2 flex-col row-span-2'>
+            <label className="text-base font-semibold">Long Description</label>
+            <MyEditor
+              content={infotxt}
+              setContent={setInfoTxt} // Only update the infotxt state here
+              desHeight={"120px"}
+            />
+            {formik.errors.LongDescription && formik.touched.LongDescription ? (
+              <span className="text-danger">{formik.errors.LongDescription}</span>
+            ) : null}
+          </div>
 
           {/* Category Levels */}
           <FormInput

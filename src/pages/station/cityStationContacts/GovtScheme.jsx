@@ -11,10 +11,12 @@ import { useAuth } from '../../../context/AuthContext'
 import axios from 'axios'
 import { DataGrid } from '@mui/x-data-grid'
 import DatagridRowAction from '../../../components/common/DatagridRowAction'
+import MyEditor from '../../../components/textEditor/MyEditor'
 
 const GovtScheme = () => {
     const { userDetails } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
+    const [infotxt, setInfoTxt] = useState('');
     const [list, setList] = useState({ data: [], loading: false });
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -37,52 +39,27 @@ const GovtScheme = () => {
         { field: "Eligibility", headerName: "Eligibility", flex: 1, minWidth: 180, headerClassName: "health-table-header-style" },
         {
             field: "ShortDesc", headerName: "Short Description", flex: 1, minWidth: 180, headerClassName: "health-table-header-style", renderCell: (params) => (
-                <div
-                    style={{
-                        width: "100%",
-                        overflow: "visible",  // ensures tooltip positions correctly
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                    }}
-                >
-                    <Tooltip
-                        title={<span style={{ whiteSpace: "normal" }}>{params.value || ""}</span>}
-                        arrow
-                        placement="top-start"
-                        PopperProps={{
-                            modifiers: [
-                                {
-                                    name: "flip",
-                                    enabled: true,
-                                    options: { altBoundary: true, rootBoundary: "document", padding: 8 },
-                                },
-                                {
-                                    name: "preventOverflow",
-                                    enabled: true,
-                                    options: { boundary: "viewport" },
-                                },
-                            ],
-                        }}
-                    >
-                        <span className="block truncate cursor-pointer">
-                            {params.value || ""}
-                        </span>
-                    </Tooltip>
-                </div>
+                params.row?.ShortDesc
             )
         },
         {
-            field: "LongDesc", headerName: "Long Description", flex: 1, minWidth: 180, headerClassName: "health-table-header-style", renderCell: (params) => (
-                <div style={{ width: "100%", overflow: "visible" }}>
-                    <Tooltip
-                        title={<span style={{ whiteSpace: "normal" }}>{params.value || ""}</span>}
-                        arrow
-                        placement="top-start"
-                    >
-                        <span className="block truncate cursor-pointer">{params.value || ""}</span>
-                    </Tooltip>
-                </div>
-            ),
+            field: "LongDesc",
+            headerName: "Long Description",
+            minWidth: 220,
+            headerClassName: "health-table-header-style",
+            renderCell: (params) => {
+                const longDesc = params.value;
+                const maxLength = 400;
+                const displayText = (typeof longDesc === 'string' && longDesc.length > maxLength) ? longDesc.slice(0, maxLength) + '...' : longDesc;
+
+                if (!displayText) {
+                    return 'N/A';
+                }
+
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: displayText }} />
+                );
+            },
         },
         { field: "GovernmentAuthority", headerName: "Government Authority", flex: 1, minWidth: 180, headerClassName: "health-table-header-style" },
         {
@@ -143,6 +120,7 @@ const GovtScheme = () => {
                     toast.success("Data added successfully");
                     resetForm();
                     getStationIndicator();
+                    setInfoTxt("");
                 } else {
                     toast.error(res.response.response_message || "Failed to add Data");
                 }
@@ -207,6 +185,9 @@ const GovtScheme = () => {
     useEffect(() => {
         getStationIndicator()
     }, []);
+    useEffect(() => {
+        formik.setFieldValue('LongDesc', infotxt);
+    }, [infotxt]);
     return (
         <div className="p-4 bg-white">
             <SectionHeader
@@ -249,7 +230,7 @@ const GovtScheme = () => {
                         error={formik.touched?.ShortDesc && formik.errors?.ShortDesc}
                         helperText={formik.touched?.ShortDesc && formik.errors?.ShortDesc}
                     />
-                    <FormInput
+                    {/* <FormInput
                         label="Long Description"
                         name="LongDesc"
                         placeholder="Enter Long Description"
@@ -259,7 +240,18 @@ const GovtScheme = () => {
                         onChange={formik.handleChange}
                         error={formik.touched?.LongDesc && formik.errors?.LongDesc}
                         helperText={formik.touched?.LongDesc && formik.errors?.LongDesc}
-                    />
+                    /> */}
+                    <div className='flex gap-2 flex-col row-span-2'>
+                        <label className="text-base font-semibold">Long Description</label>
+                        <MyEditor
+                            content={infotxt}
+                            setContent={setInfoTxt} // Only update the infotxt state here
+                            desHeight={"120px"}
+                        />
+                        {formik.errors.LongDesc && formik.touched.LongDesc ? (
+                            <span className="text-danger">{formik.errors.LongDesc}</span>
+                        ) : null}
+                    </div>
                     <FormInput
                         label="Government Authority"
                         name="GovernmentAuthority"
@@ -346,6 +338,19 @@ const GovtScheme = () => {
                     loading={list?.loading}
                     autoHeight
                     pagination
+                    sx={{
+                        '& .MuiDataGrid-cell': {
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'start',
+                            padding: '8px',
+                        },
+                        '& .MuiDataGrid-columnHeaderTitleContainer': {
+                            justifyContent: 'center',
+                            padding: '8px',
+                        }
+                    }}
+                    getRowHeight={() => "auto"}
                     getRowId={(row) => row._id}
                     paginationModel={paginationModel}
                     onPaginationModelChange={setPaginationModel}

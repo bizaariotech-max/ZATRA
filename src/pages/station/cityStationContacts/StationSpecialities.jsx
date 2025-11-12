@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react'
 import SectionHeader from '../../../components/common/SectionHeader'
 import FormInput from '../../../components/common/FormInput'
 import FormButton from '../../../components/common/FormButton'
-import { Button, IconButton, TextField } from '@mui/material'
+import {
+    Button, IconButton, TextField, Dialog,
+    DialogTitle,
+    DialogContent,
+    Divider,
+} from '@mui/material'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -11,12 +16,17 @@ import { __getCommenApiDataList } from '../../../utils/api/commonApi'
 import { useAuth } from '../../../context/AuthContext'
 import axios from 'axios'
 import { DataGrid } from '@mui/x-data-grid'
+import CloseIcon from "@mui/icons-material/Close";
+import CollectionsIcon from '@mui/icons-material/Collections';
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import DatagridRowAction from '../../../components/common/DatagridRowAction'
+import MyEditor from '../../../components/textEditor/MyEditor'
 const StationSpecialities = () => {
     const { userDetails } = useAuth();
     const [editId, setEditId] = React.useState(null)
     const [isLoading, setIsLoading] = React.useState(false)
     const [categoryList, setCategoryList] = React.useState([])
+    const [infotxt, setInfoTxt] = useState('');
     const [stationSpecialities, setStationSpecialities] = React.useState({
         loading: false,
         data: [],
@@ -25,6 +35,22 @@ const StationSpecialities = () => {
         page: 0,
         pageSize: 10,
     });
+    const [openGallery, setOpenGallery] = useState(false);
+    const [galleryData, setGalleryData] = useState({ images: [], videos: [] });
+
+    const handleOpenGallery = (row, type) => {
+        if (type === "image") {
+            setGalleryData({ images: row?.PictureGallery || [], videos: [] });
+        } else if (type === "video") {
+            setGalleryData({ images: [], videos: row?.VideoGallery || [] });
+        }
+        setOpenGallery(true);
+    };
+
+    const handleCloseGallery = () => {
+        setOpenGallery(false);
+        setGalleryData({ images: [], videos: [] });
+    };
 
     const columns = [
         {
@@ -76,30 +102,55 @@ const StationSpecialities = () => {
             headerClassName: "health-table-header-style",
             minWidth: 180,
             flex: 1,
-            renderCell: (params) => <span>{params.row?.LongDescription || "N/A"}</span>,
+            renderCell: (params) => {
+                const longDesc = params.value;
+                const maxLength = 400;
+                const displayText = (typeof longDesc === 'string' && longDesc.length > maxLength) ? longDesc.slice(0, maxLength) + '...' : longDesc;
+
+                if (!displayText) {
+                    return 'N/A';
+                }
+
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: displayText }} />
+                );
+            },
         },
         {
             field: "PictureGallery",
-            headerName: "Image Gallery",
-            headerClassName: "health-table-header-style",
+            headerName: "Images",
             minWidth: 180,
-            flex: 1,
+            headerClassName: "health-table-header-style",
+            align: "center",
             renderCell: (params) => {
-                const gallery = params.row?.PictureGallery;
-
-                if (!gallery || gallery.length === 0) return <span>N/A</span>;
-
-                return (
-                    <div className="flex gap-2">
-                        {gallery.map((item, index) => (
-                            <img
-                                key={index}
-                                src={item}
-                                alt="Gallery"
-                                className="w-12 h-12 rounded object-cover border border-gray-300"
-                            />
-                        ))}
+                const images = params.row?.PictureGallery || [];
+                return images.length > 0 ? (
+                    <div className="flex gap-1 justify-center">
+                        <IconButton color="primary" onClick={() => handleOpenGallery(params.row, "image")}>
+                            <CollectionsIcon />
+                        </IconButton>
                     </div>
+                ) : (
+                    "N/A"
+                );
+            },
+        },
+        {
+            field: "VideoGallery",
+            headerName: "Videos",
+            minWidth: 150,
+            headerClassName: "health-table-header-style",
+            align: "center",
+            renderCell: (params) => {
+                const videos = params.row?.VideoGallery || [];
+                return videos?.length > 0 ? (
+                    <div className="flex gap-1 items-center">
+                        <IconButton color="primary" onClick={() => handleOpenGallery(params.row, "video")}>
+                            <PlayCircleIcon />
+                        </IconButton>
+                    </div>
+                ) : (
+                    "N/A"
                 );
             },
         },
@@ -137,6 +188,7 @@ const StationSpecialities = () => {
                     toast.success("Station Speciality added successfully");
                     resetForm();
                     getStationIndicator();
+                    setInfoTxt("")
                 } else {
                     toast.error(res.response.response_message || "Failed to add Station Speciality");
                 }
@@ -234,6 +286,9 @@ const StationSpecialities = () => {
         const updated = formik.values.URL.filter((_, i) => i !== index);
         formik.setFieldValue("URL", updated);
     };
+    useEffect(() => {
+        formik.setFieldValue('LongDescription', infotxt);
+    }, [infotxt]);
     return (
         <div className="p-4 bg-white">
             <SectionHeader
@@ -277,18 +332,20 @@ const StationSpecialities = () => {
                         error={formik.touched?.ShortDescription && formik.errors?.ShortDescription}
                         helperText={formik.touched?.ShortDescription && formik.errors?.ShortDescription}
                     />
-                    <FormInput
-                        label="Long Description"
-                        name="LongDescription"
-                        placeholder="Enter Long Description"
-                        multiline
-                        rows={3}
-                        value={formik.values?.LongDescription}
-                        onChange={formik.handleChange}
-                        error={formik.touched?.LongDescription && formik.errors?.LongDescription}
-                        helperText={formik.touched?.LongDescription && formik.errors?.LongDescription}
-                    />
+                </div>
 
+                <div className="flex flex-col gap-2">
+                    <label className="text-base font-semibold">Long Description</label>
+                    <MyEditor
+                        content={infotxt}
+                        setContent={setInfoTxt}
+                        desHeight={"120px"}
+                    />
+                    {formik.errors.LongDescription && formik.touched.LongDescription ? (
+                        <span className="text-danger">{formik.errors.LongDescription}</span>
+                    ) : null}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Picture Gallery */}
                     <div className="">
                         <label className="font-semibold">Picture Gallery</label>
@@ -401,9 +458,8 @@ const StationSpecialities = () => {
                             + Add More
                         </Button>
                     </div>
-
-
                 </div>
+
                 <div>
                     <label className="font-semibold">Product Video URLs</label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -457,11 +513,103 @@ const StationSpecialities = () => {
                     autoHeight
                     pagination
                     getRowId={(row) => row._id}
+                    sx={{
+                        '& .MuiDataGrid-cell': {
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'start',
+                            padding: '8px',
+                        },
+                        '& .MuiDataGrid-columnHeaderTitleContainer': {
+                            justifyContent: 'center',
+                            padding: '8px',
+                        }
+                    }}
+                    getRowHeight={() => "auto"}
                     paginationModel={paginationModel}
                     onPaginationModelChange={setPaginationModel}
                     pageSizeOptions={[5, 10]}
                 />
             </div>
+            {/* ✅ Gallery Modal */}
+          <Dialog open={openGallery} onClose={handleCloseGallery} maxWidth="md" fullWidth>
+  <DialogTitle
+    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+  >
+    <span>
+      {galleryData.images?.length > 0
+        ? "Image Gallery"
+        : galleryData.videos?.length > 0
+        ? "Video Gallery"
+        : "Gallery"}
+    </span>
+    <IconButton onClick={handleCloseGallery}>
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+
+  <Divider />
+
+  <DialogContent>
+    <div className="container gap-2">
+      {/* ✅ Image Gallery */}
+      {galleryData.images?.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {galleryData.images.map((img, i) => (
+            <div key={i}>
+              <img
+                src={img}
+                alt={`pic-${i}`}
+                className="w-full h-32 object-cover rounded border"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ✅ Video Gallery (supports both MP4 & YouTube links) */}
+      {galleryData?.videos?.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+          {galleryData.videos.map((video, i) => {
+            const isYouTube =
+              video?.includes("youtube.com") || video?.includes("youtu.be");
+
+            // ✅ Convert YouTube URL to embed format
+            const embedUrl = isYouTube
+              ? video
+                  .replace("watch?v=", "embed/")
+                  .replace("youtu.be/", "www.youtube.com/embed/")
+              : video;
+
+            return (
+              <div key={i} className="rounded border overflow-hidden">
+                {isYouTube ? (
+                  <iframe
+                    width="100%"
+                    height="180"
+                    src={embedUrl}
+                    title={`youtube-video-${i}`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                ) : (
+                  <video
+                    controls
+                    className="w-full h-32 object-cover rounded border"
+                  >
+                    <source src={video} type="video/mp4" />
+                  </video>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </DialogContent>
+</Dialog>
+
         </div>
     )
 }

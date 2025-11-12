@@ -1,0 +1,21 @@
+/* MyEditor.css */
+
+/* Target undo and redo buttons specifically */
+.ql-toolbar .ql-undo::before {
+    content: '⟲'; /* Optional: custom icon for undo */
+    color: red;
+  }
+  
+  .ql-toolbar .ql-redo::before {
+    content: '⟳'; /* Optional: custom icon for redo */
+    color: red;
+  }
+  
+  /* Optional: Style the buttons further (e.g., adding background color or border) */
+  .ql-toolbar button.ql-undo, 
+  .ql-toolbar button.ql-redo {
+    background-color: transparent; /* No background */
+    border: none; /* No border */
+    font-size: 16px; /* Adjust size if needed */
+  }
+  

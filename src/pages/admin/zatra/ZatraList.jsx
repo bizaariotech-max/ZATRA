@@ -18,6 +18,7 @@ import Organizer from "../../../components/admin/zatra/Organizer";
 import SocialMedia from "../../../components/admin/zatra/SocialMedia";
 import RegistrationFee from "../../../components/admin/zatra/RegistrationFee";
 import LoginListModal from "../../../components/admin/common/LoginListModal";
+import MyEditor from "../../../components/textEditor/MyEditor";
 const ZatraList = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [zatraList, setZatraList] = React.useState([]);
@@ -25,6 +26,7 @@ const ZatraList = () => {
     const [categoryList, setCategoryList] = React.useState([]);
     const [paginationModel, setPaginationModel] = React.useState({ page: 0, pageSize: 10 });
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [infotxt, setInfoTxt] = useState('');
     const [menuRowId, setMenuRowId] = useState(null);
     const [openModal, setOpenModal] = useState({
         type: null, // "zatra" or "enroute"
@@ -241,6 +243,7 @@ const ZatraList = () => {
                     toast.success("Zatra added successfully");
                     fetchZatraList();
                     resetForm();
+                    setInfoTxt("")
                 } else {
                     toast.error(res.response.response_message || "Failed to add Zatra");
                 }
@@ -252,8 +255,11 @@ const ZatraList = () => {
             }
         },
     });
+    useEffect(() => {
+        formik.setFieldValue('LongDescription', infotxt);
+    }, [infotxt]);
 
-  useEffect(() => {
+    useEffect(() => {
         if (formik.values.IsOngoing === true) {
             formik.setFieldValue("StartDate", "");
             formik.setFieldValue("EndDate", "");
@@ -339,21 +345,20 @@ const ZatraList = () => {
                         helperText={formik.touched.ShortDescription && formik.errors.ShortDescription}
                     />
 
-                    {/* Long Description */}
-                    <FormInput
-                        label="Long Description"
-                        name="LongDescription"
-                        placeholder="Enter long description"
-                        multiline
-                        rows={3}
-                        value={formik.values.LongDescription}
-                        onChange={formik.handleChange}
-                        error={formik.touched.LongDescription && formik.errors.LongDescription}
-                        helperText={formik.touched.LongDescription && formik.errors.LongDescription}
-                    />
-
 
                 </div>
+                <div className="flex flex-col gap-2">
+                    <label className="text-base font-semibold">Long Description</label>
+                    <MyEditor
+                        content={infotxt}
+                        setContent={setInfoTxt} // Only update the infotxt state here
+                        desHeight={"120px"}
+                    />
+                    {formik.errors.LongDescription && formik.touched.LongDescription ? (
+                        <span className="text-danger">{formik.errors.LongDescription}</span>
+                    ) : null}
+                </div>
+
                 {/* Logo Upload */}
                 <div className="flex flex-col gap-2">
                     <label htmlFor="Logo" className="text-base font-semibold">
