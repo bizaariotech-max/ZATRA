@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import FormInput from '../common/FormInput'
 import MappingSection from './MappingSection'
+import MyEditor from '../textEditor/MyEditor'
 import { __getCommenApiDataList } from '../../utils/api/commonApi'
 
 const ScheduleForm = ({ initialSchedule, onChange }) => {
@@ -18,6 +19,7 @@ const ScheduleForm = ({ initialSchedule, onChange }) => {
         NoOfVisitors: initialSchedule.NoOfVisitors,
         Advisory: initialSchedule.Advisory,
     })
+    const [instructionsEditor, setInstructionsEditor] = useState(initialSchedule.Insturctions || "");
     const [brandsList, setBrandsList] = useState([]);
     const handleChangeChecked = (field, updatedList) => {
         const updatedData = {
@@ -30,6 +32,14 @@ const ScheduleForm = ({ initialSchedule, onChange }) => {
     useEffect(() => {
         onChange(scheduleDetails);
     }, [scheduleDetails]);
+
+    // Sync instructions editor to form state
+    useEffect(() => {
+        setScheduleDetails((prev) => ({
+            ...prev,
+            Insturctions: instructionsEditor,
+        }));
+    }, [instructionsEditor]);
 
     ///========== fetch data from api ============\\
     const fetchData = async (lookupTypes, stateKey, parent_lookup_id) => {
@@ -106,14 +116,14 @@ const ScheduleForm = ({ initialSchedule, onChange }) => {
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 border border-gray-200 p-4 rounded-md">
                     <FormInput
-                        type='date'
+                        type='time'
                         name={"MbtFrom"}
                         label={"From"}
                         value={scheduleDetails.MbtFrom}
                         onChange={handleChange}
                     />
                     <FormInput
-                        type='date'
+                        type='time'
                         name={"MbtTo"}
                         label={"To"}
                         value={scheduleDetails.MbtTo}
@@ -143,15 +153,14 @@ const ScheduleForm = ({ initialSchedule, onChange }) => {
                     />
                 </div>
             </div>
-            <FormInput
-                multiline
-                rows={3}
-                name={"Insturctions"}
-                label={"Insturctions for users"}
-                placeholder={"Enter Instruction for users"}
-                value={scheduleDetails.Insturctions}
-                onChange={handleChange}
-            />
+            <div className="flex flex-col gap-2">
+                <label className="text-base font-semibold">Instructions for users</label>
+                <MyEditor
+                    content={instructionsEditor}
+                    setContent={setInstructionsEditor}
+                    desHeight={"120px"}
+                />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
                 <FormInput
                     name={"NoOfVisitors"}
