@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SectionHeader from '../../../components/common/SectionHeader'
 import FormInput from '../../../components/common/FormInput'
 import FormButton from '../../../components/common/FormButton'
-import { TextField,} from '@mui/material'
+import { TextField, } from '@mui/material'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { __postApiData, BASE_URL } from '../../../utils/api'
@@ -16,6 +16,7 @@ import MyEditor from '../../../components/textEditor/MyEditor'
 const GovtScheme = () => {
     const { userDetails } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
+    const [sortInfo, setSortInfo] = useState('');
     const [infotxt, setInfoTxt] = useState('');
     const [list, setList] = useState({ data: [], loading: false });
     const [paginationModel, setPaginationModel] = useState({
@@ -38,9 +39,20 @@ const GovtScheme = () => {
         { field: "PolicyTitle", headerName: "Policy Title", flex: 1, minWidth: 180, headerClassName: "health-table-header-style" },
         { field: "Eligibility", headerName: "Eligibility", flex: 1, minWidth: 180, headerClassName: "health-table-header-style" },
         {
-            field: "ShortDesc", headerName: "Short Description", flex: 1, minWidth: 180, headerClassName: "health-table-header-style", renderCell: (params) => (
-                params.row?.ShortDesc
-            )
+            field: "ShortDesc", headerName: "Short Description", flex: 1, minWidth: 180, headerClassName: "health-table-header-style",
+            renderCell: (params) => {
+                const ShortDesc = params.value;
+                const maxLength = 200;
+                const displayText = (typeof ShortDesc === 'string' && ShortDesc.length > maxLength) ? ShortDesc.slice(0, maxLength) + '...' : ShortDesc;
+
+                if (!displayText) {
+                    return 'N/A';
+                }
+
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: displayText }} />
+                );
+            },
         },
         {
             field: "LongDesc",
@@ -121,6 +133,7 @@ const GovtScheme = () => {
                     resetForm();
                     getStationIndicator();
                     setInfoTxt("");
+                    setSortInfo('');
                 } else {
                     toast.error(res.response.response_message || "Failed to add Data");
                 }
@@ -186,6 +199,9 @@ const GovtScheme = () => {
         getStationIndicator()
     }, []);
     useEffect(() => {
+        formik.setFieldValue('ShortDesc', sortInfo);
+    }, [sortInfo]);
+    useEffect(() => {
         formik.setFieldValue('LongDesc', infotxt);
     }, [infotxt]);
     return (
@@ -219,17 +235,17 @@ const GovtScheme = () => {
                         helperText={formik.touched?.Eligibility && formik.errors?.Eligibility}
                         inputMode={"numeric"}
                     />
-                    <FormInput
-                        label="Short Description"
-                        name="ShortDesc"
-                        placeholder="Enter Short Description"
-                        multiline
-                        rows={3}
-                        value={formik.values?.ShortDesc}
-                        onChange={formik.handleChange}
-                        error={formik.touched?.ShortDesc && formik.errors?.ShortDesc}
-                        helperText={formik.touched?.ShortDesc && formik.errors?.ShortDesc}
-                    />
+                    <div className='flex gap-2 flex-col'>
+                        <label className="text-base font-semibold">Short Description</label>
+                        <MyEditor
+                            content={sortInfo}
+                            setContent={setSortInfo} // Only update the infotxt state here
+                            desHeight={"120px"}
+                        />
+                        {formik.errors.ShortDesc && formik.touched.ShortDesc ? (
+                            <span className="text-danger">{formik.errors.ShortDesc}</span>
+                        ) : null}
+                    </div>
                     {/* <FormInput
                         label="Long Description"
                         name="LongDesc"
@@ -241,7 +257,7 @@ const GovtScheme = () => {
                         error={formik.touched?.LongDesc && formik.errors?.LongDesc}
                         helperText={formik.touched?.LongDesc && formik.errors?.LongDesc}
                     /> */}
-                    <div className='flex gap-2 flex-col row-span-2'>
+                    <div className='flex gap-2 flex-col'>
                         <label className="text-base font-semibold">Long Description</label>
                         <MyEditor
                             content={infotxt}

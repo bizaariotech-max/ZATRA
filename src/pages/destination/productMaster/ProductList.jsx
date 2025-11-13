@@ -56,6 +56,7 @@ const ProductList = () => {
   const [list, setList] = useState({ data: [], loading: false });
   const [brandList, setBrandList] = useState({ data: [], loading: false });
   const [editId, setEditId] = useState(null);
+  const [sortInfo, setSortInfo] = useState('');
   const [infotxt, setInfoTxt] = useState('');
   const navigate = useNavigate();
 
@@ -127,6 +128,7 @@ const ProductList = () => {
           setEditId(null);
           getProductList();
           setInfoTxt("");
+          setSortInfo('');
         } else {
           console.log(res);
           toast.error(res.response?.response_message || res.response?.response_message?.error || "Failed to add Data");
@@ -182,7 +184,19 @@ const ProductList = () => {
       minWidth: 180,
       flex: 1,
       align: "center",
-      renderCell: (params) => <span className='px-1 py-4'>{params.row?.ShortDescription || "N/A"}</span>,
+      renderCell: (params) => {
+                const shortDesc = params.value;
+                const maxLength = 200;
+                const displayText = (typeof shortDesc === 'string' && shortDesc.length > maxLength) ? shortDesc.slice(0, maxLength) + '...' : shortDesc;
+
+                if (!displayText) {
+                    return 'N/A';
+                }
+
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: displayText }} />
+                );
+            },
     },
 
     {
@@ -192,7 +206,19 @@ const ProductList = () => {
       minWidth: 180,
       flex: 1,
       align: "center",
-      renderCell: (params) => <span className='px-1 py-4'>{params.row?.LongDescription || "N/A"}</span>,
+      renderCell: (params) => {
+                const longDesc = params.value;
+                const maxLength = 400;
+                const displayText = (typeof longDesc === 'string' && longDesc.length > maxLength) ? longDesc.slice(0, maxLength) + '...' : longDesc;
+
+                if (!displayText) {
+                    return 'N/A';
+                }
+
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: displayText }} />
+                );
+            },
     },
     {
       field: "StationSpeciality",
@@ -428,9 +454,12 @@ const ProductList = () => {
     }
   };
 
-   useEffect(() => {
-          formik.setFieldValue('LongDescription', infotxt);
-      }, [infotxt]);
+    useEffect(() => {
+    formik.setFieldValue('ShortDescription', sortInfo);
+  }, [sortInfo]);
+  useEffect(() => {
+    formik.setFieldValue('LongDescription', infotxt);
+  }, [infotxt]);
 
   return (
     <div className="p-4 bg-white">
@@ -464,19 +493,18 @@ const ProductList = () => {
           />
 
           {/* Descriptions */}
-          <FormInput
-            label="Short Description"
-            multiline
-            rows={3}
-            placeholder={"Enter Short description"}
-            name="ShortDescription"
-            value={values.ShortDescription}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.ShortDescription && errors.ShortDescription}
-            helperText={touched.ShortDescription && errors.ShortDescription}
-          />
-          <div className='flex gap-2 flex-col row-span-2'>
+          <div className='flex gap-2 flex-col'>
+            <label className="text-base font-semibold">Short Description</label>
+            <MyEditor
+              content={sortInfo}
+              setContent={setSortInfo} // Only update the infotxt state here
+              desHeight={"120px"}
+            />
+            {formik.errors.ShortDescription && formik.touched.ShortDescription ? (
+              <span className="text-danger">{formik.errors.ShortDescription}</span>
+            ) : null}
+          </div>
+          <div className='flex gap-2 flex-col'>
             <label className="text-base font-semibold">Long Description</label>
             <MyEditor
               content={infotxt}

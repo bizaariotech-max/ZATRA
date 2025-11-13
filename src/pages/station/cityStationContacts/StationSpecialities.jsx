@@ -27,6 +27,7 @@ const StationSpecialities = () => {
     const [isLoading, setIsLoading] = React.useState(false)
     const [categoryList, setCategoryList] = React.useState([])
     const [infotxt, setInfoTxt] = useState('');
+    const [sortInfo, setSortInfo] = useState('');
     const [stationSpecialities, setStationSpecialities] = React.useState({
         loading: false,
         data: [],
@@ -94,7 +95,19 @@ const StationSpecialities = () => {
             headerClassName: "health-table-header-style",
             minWidth: 180,
             flex: 1,
-            renderCell: (params) => <span>{params.row?.ShortDescription || "N/A"}</span>,
+            renderCell: (params) => {
+                const shortDesc = params.value;
+                const maxLength = 200;
+                const displayText = (typeof shortDesc === 'string' && shortDesc.length > maxLength) ? shortDesc.slice(0, maxLength) + '...' : shortDesc;
+
+                if (!displayText) {
+                    return 'N/A';
+                }
+
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: displayText }} />
+                );
+            },
         },
         {
             field: "LongDescription",
@@ -181,10 +194,10 @@ const StationSpecialities = () => {
         },
         onSubmit: async (values, { resetForm }) => {
             const mergedVideos = [
-                    ...(values.VideoGallery?.filter(Boolean) || []),
-                    ...(values.URL?.filter(Boolean) || []),
-                ];
-            const payload = { ...values, CityId: userDetails?.StationId,VideoGallery: mergedVideos, _id: editId || null };
+                ...(values.VideoGallery?.filter(Boolean) || []),
+                ...(values.URL?.filter(Boolean) || []),
+            ];
+            const payload = { ...values, CityId: userDetails?.StationId, VideoGallery: mergedVideos, _id: editId || null };
             try {
                 setIsLoading(true);
                 const res = await __postApiData("/api/v1/admin/SaveODOP", payload);
@@ -193,6 +206,7 @@ const StationSpecialities = () => {
                     resetForm();
                     getStationIndicator();
                     setInfoTxt("")
+                    setSortInfo('');
                 } else {
                     toast.error(res.response.response_message || "Failed to add Station Speciality");
                 }
@@ -291,6 +305,9 @@ const StationSpecialities = () => {
         formik.setFieldValue("URL", updated);
     };
     useEffect(() => {
+        formik.setFieldValue('ShortDescription', sortInfo);
+    }, [sortInfo]);
+    useEffect(() => {
         formik.setFieldValue('LongDescription', infotxt);
     }, [infotxt]);
     return (
@@ -325,30 +342,31 @@ const StationSpecialities = () => {
                         error={formik.touched?.Name && formik.errors?.Name}
                         helperText={formik.touched?.Name && formik.errors?.Name}
                     />
-                    <FormInput
-                        label="Short Description"
-                        name="ShortDescription"
-                        placeholder="Enter Short Description"
-                        multiline
-                        rows={3}
-                        value={formik.values?.ShortDescription}
-                        onChange={formik.handleChange}
-                        error={formik.touched?.ShortDescription && formik.errors?.ShortDescription}
-                        helperText={formik.touched?.ShortDescription && formik.errors?.ShortDescription}
-                    />
+                    <div className="flex flex-col gap-2">
+                        <label className="text-base font-semibold">Short Description</label>
+                        <MyEditor
+                            content={sortInfo}
+                            setContent={setSortInfo}
+                            desHeight={"120px"}
+                        />
+                        {formik.errors.ShortDescription && formik.touched.ShortDescription ? (
+                            <span className="text-danger">{formik.errors.ShortDescription}</span>
+                        ) : null}
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className="text-base font-semibold">Long Description</label>
+                        <MyEditor
+                            content={infotxt}
+                            setContent={setInfoTxt}
+                            desHeight={"120px"}
+                        />
+                        {formik.errors.LongDescription && formik.touched.LongDescription ? (
+                            <span className="text-danger">{formik.errors.LongDescription}</span>
+                        ) : null}
+                    </div>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <label className="text-base font-semibold">Long Description</label>
-                    <MyEditor
-                        content={infotxt}
-                        setContent={setInfoTxt}
-                        desHeight={"120px"}
-                    />
-                    {formik.errors.LongDescription && formik.touched.LongDescription ? (
-                        <span className="text-danger">{formik.errors.LongDescription}</span>
-                    ) : null}
-                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Picture Gallery */}
                     <div className="">
@@ -536,83 +554,83 @@ const StationSpecialities = () => {
                 />
             </div>
             {/* ✅ Gallery Modal */}
-          <Dialog open={openGallery} onClose={handleCloseGallery} maxWidth="md" fullWidth>
-  <DialogTitle
-    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-  >
-    <span>
-      {galleryData.images?.length > 0
-        ? "Image Gallery"
-        : galleryData.videos?.length > 0
-        ? "Video Gallery"
-        : "Gallery"}
-    </span>
-    <IconButton onClick={handleCloseGallery}>
-      <CloseIcon />
-    </IconButton>
-  </DialogTitle>
+            <Dialog open={openGallery} onClose={handleCloseGallery} maxWidth="md" fullWidth>
+                <DialogTitle
+                    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                >
+                    <span>
+                        {galleryData.images?.length > 0
+                            ? "Image Gallery"
+                            : galleryData.videos?.length > 0
+                                ? "Video Gallery"
+                                : "Gallery"}
+                    </span>
+                    <IconButton onClick={handleCloseGallery}>
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
 
-  <Divider />
+                <Divider />
 
-  <DialogContent>
-    <div className="container gap-2">
-      {/* ✅ Image Gallery */}
-      {galleryData.images?.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {galleryData.images.map((img, i) => (
-            <div key={i}>
-              <img
-                src={img}
-                alt={`pic-${i}`}
-                className="w-full h-32 object-cover rounded border"
-              />
-            </div>
-          ))}
-        </div>
-      )}
+                <DialogContent>
+                    <div className="container gap-2">
+                        {/* ✅ Image Gallery */}
+                        {galleryData.images?.length > 0 && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                {galleryData.images.map((img, i) => (
+                                    <div key={i}>
+                                        <img
+                                            src={img}
+                                            alt={`pic-${i}`}
+                                            className="w-full h-32 object-cover rounded border"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
-      {/* ✅ Video Gallery (supports both MP4 & YouTube links) */}
-      {galleryData?.videos?.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
-          {galleryData.videos.map((video, i) => {
-            const isYouTube =
-              video?.includes("youtube.com") || video?.includes("youtu.be");
+                        {/* ✅ Video Gallery (supports both MP4 & YouTube links) */}
+                        {galleryData?.videos?.length > 0 && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+                                {galleryData.videos.map((video, i) => {
+                                    const isYouTube =
+                                        video?.includes("youtube.com") || video?.includes("youtu.be");
 
-            // ✅ Convert YouTube URL to embed format
-            const embedUrl = isYouTube
-              ? video
-                  .replace("watch?v=", "embed/")
-                  .replace("youtu.be/", "www.youtube.com/embed/")
-              : video;
+                                    // ✅ Convert YouTube URL to embed format
+                                    const embedUrl = isYouTube
+                                        ? video
+                                            .replace("watch?v=", "embed/")
+                                            .replace("youtu.be/", "www.youtube.com/embed/")
+                                        : video;
 
-            return (
-              <div key={i} className="rounded border overflow-hidden">
-                {isYouTube ? (
-                  <iframe
-                    width="100%"
-                    height="180"
-                    src={embedUrl}
-                    title={`youtube-video-${i}`}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                ) : (
-                  <video
-                    controls
-                    className="w-full h-32 object-cover rounded border"
-                  >
-                    <source src={video} type="video/mp4" />
-                  </video>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  </DialogContent>
-</Dialog>
+                                    return (
+                                        <div key={i} className="rounded border overflow-hidden">
+                                            {isYouTube ? (
+                                                <iframe
+                                                    width="100%"
+                                                    height="180"
+                                                    src={embedUrl}
+                                                    title={`youtube-video-${i}`}
+                                                    frameBorder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowFullScreen
+                                                ></iframe>
+                                            ) : (
+                                                <video
+                                                    controls
+                                                    className="w-full h-32 object-cover rounded border"
+                                                >
+                                                    <source src={video} type="video/mp4" />
+                                                </video>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </DialogContent>
+            </Dialog>
 
         </div>
     )

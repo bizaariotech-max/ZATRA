@@ -26,6 +26,7 @@ const ZatraList = () => {
     const [categoryList, setCategoryList] = React.useState([]);
     const [paginationModel, setPaginationModel] = React.useState({ page: 0, pageSize: 10 });
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [sortInfo, setSortInfo] = useState('');
     const [infotxt, setInfoTxt] = useState('');
     const [menuRowId, setMenuRowId] = useState(null);
     const [openModal, setOpenModal] = useState({
@@ -66,8 +67,38 @@ const ZatraList = () => {
         },
         { field: "Name", headerName: "Zatra Name", headerClassName: "health-table-header-style", minWidth: 150, renderCell: (params) => <span>{params.row?.Name || "N/A"}</span>, },
         { field: "ZatraTypeId", headerName: "Zatra Type", headerClassName: "health-table-header-style", minWidth: 150, renderCell: (params) => <span>{params.row?.ZatraTypeId?.lookup_value || "N/A"}</span>, },
-        { field: "ShortDescription", headerName: "Short Description", headerClassName: "health-table-header-style", minWidth: 150, renderCell: (params) => <span>{params.row?.ShortDescription || "N/A"}</span>, },
-        { field: "LongDescription", headerName: "Long Description", headerClassName: "health-table-header-style", minWidth: 150, renderCell: (params) => <span>{params.row?.LongDescription || "N/A"}</span>, },
+        {
+            field: "ShortDescription", headerName: "Short Description", headerClassName: "health-table-header-style", minWidth: 150,
+            renderCell: (params) => {
+                const shortDesc = params.value;
+                const maxLength = 200;
+                const displayText = (typeof shortDesc === 'string' && shortDesc.length > maxLength) ? shortDesc.slice(0, maxLength) + '...' : shortDesc;
+
+                if (!displayText) {
+                    return 'N/A';
+                }
+
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: displayText }} />
+                );
+            },
+        },
+        {
+            field: "LongDescription", headerName: "Long Description", headerClassName: "health-table-header-style", minWidth: 150,
+            renderCell: (params) => {
+                const longDesc = params.value;
+                const maxLength = 400;
+                const displayText = (typeof longDesc === 'string' && longDesc.length > maxLength) ? longDesc.slice(0, maxLength) + '...' : longDesc;
+
+                if (!displayText) {
+                    return 'N/A';
+                }
+
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: displayText }} />
+                );
+            },
+        },
         { field: "StartDate", headerName: "Start Date", headerClassName: "health-table-header-style", minWidth: 150, renderCell: (params) => <span>{__formatDate2(params.row?.StartDate) || "N/A"}</span>, },
         { field: "EndDate", headerName: "End Date", headerClassName: "health-table-header-style", minWidth: 150, renderCell: (params) => <span>{__formatDate2(params.row?.EndDate) || "N/A"}</span>, },
         {
@@ -244,6 +275,7 @@ const ZatraList = () => {
                     fetchZatraList();
                     resetForm();
                     setInfoTxt("")
+                    setSortInfo('');
                 } else {
                     toast.error(res.response.response_message || "Failed to add Zatra");
                 }
@@ -255,6 +287,9 @@ const ZatraList = () => {
             }
         },
     });
+    useEffect(() => {
+        formik.setFieldValue('ShortDescription', sortInfo);
+    }, [sortInfo]);
     useEffect(() => {
         formik.setFieldValue('LongDescription', infotxt);
     }, [infotxt]);
@@ -333,30 +368,29 @@ const ZatraList = () => {
                     />
 
                     {/* Short Description */}
-                    <FormInput
-                        label="Short Description"
-                        name="ShortDescription"
-                        placeholder="Enter short description"
-                        multiline
-                        rows={3}
-                        value={formik.values.ShortDescription}
-                        onChange={formik.handleChange}
-                        error={formik.touched.ShortDescription && formik.errors.ShortDescription}
-                        helperText={formik.touched.ShortDescription && formik.errors.ShortDescription}
-                    />
+                    <div className="flex flex-col gap-2">
+                        <label className="text-base font-semibold">Short Description</label>
+                        <MyEditor
+                            content={sortInfo}
+                            setContent={setSortInfo} // Only update the infotxt state here
+                            desHeight={"120px"}
+                        />
+                        {formik.errors.ShortDescription && formik.touched.ShortDescription ? (
+                            <span className="text-danger">{formik.errors.ShortDescription}</span>
+                        ) : null}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <label className="text-base font-semibold">Long Description</label>
+                        <MyEditor
+                            content={infotxt}
+                            setContent={setInfoTxt} // Only update the infotxt state here
+                            desHeight={"120px"}
+                        />
+                        {formik.errors.LongDescription && formik.touched.LongDescription ? (
+                            <span className="text-danger">{formik.errors.LongDescription}</span>
+                        ) : null}
+                    </div>
 
-
-                </div>
-                <div className="flex flex-col gap-2">
-                    <label className="text-base font-semibold">Long Description</label>
-                    <MyEditor
-                        content={infotxt}
-                        setContent={setInfoTxt} // Only update the infotxt state here
-                        desHeight={"120px"}
-                    />
-                    {formik.errors.LongDescription && formik.touched.LongDescription ? (
-                        <span className="text-danger">{formik.errors.LongDescription}</span>
-                    ) : null}
                 </div>
 
                 {/* Logo Upload */}
@@ -452,6 +486,19 @@ const ZatraList = () => {
                     autoHeight
                     pagination
                     getRowId={(row) => row._id}
+                    sx={{
+                        '& .MuiDataGrid-cell': {
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'start',
+                            padding: '8px',
+                        },
+                        '& .MuiDataGrid-columnHeaderTitleContainer': {
+                            justifyContent: 'center',
+                            padding: '8px',
+                        }
+                    }}
+                    getRowHeight={() => "auto"}
                     paginationModel={paginationModel}
                     onPaginationModelChange={setPaginationModel}
                     pageSizeOptions={[5, 10]}
