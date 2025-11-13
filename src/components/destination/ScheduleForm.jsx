@@ -9,6 +9,7 @@ const ScheduleForm = ({ initialSchedule, onChange }) => {
         BtvFrom: initialSchedule.BtvFrom,
         BtvTo: initialSchedule.BtvTo,
         WeeklyOff: initialSchedule.WeeklyOff,
+        // These fields must hold values in 'HH:mm' format (e.g., '13:30')
         OpeningTime: initialSchedule.OpeningTime,
         ClosingTime: initialSchedule.ClosingTime,
         MbtFrom: initialSchedule.MbtFrom,
@@ -60,6 +61,7 @@ const ScheduleForm = ({ initialSchedule, onChange }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        // e.target.value for type='time' will automatically be in 'HH:mm' format (24-hour)
         setScheduleDetails((prev) => ({ ...prev, [name]: value }));
     };
     return (

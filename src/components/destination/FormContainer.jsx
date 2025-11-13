@@ -512,6 +512,7 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
                         TwitterPageUrl: formData.TwitterPageUrl,
                         YouTubeChannelUrl: formData.YouTubeChannelUrl,
                         WhatsAppCommunityUrl: formData.WhatsAppCommunityUrl,
+                        LinkedinPageUrl: formData.LinkedinPageUrl,
                         TelegramUrl: formData.TelegramUrl,
                     }}
 

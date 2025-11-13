@@ -1,4 +1,3 @@
-// src/components/common/FormInput.jsx
 import React from "react";
 import { TextField, MenuItem } from "@mui/material";
 
@@ -49,7 +48,7 @@ const FormInput = ({
             size="small"
             className="custom-input"
             inputProps={{
-              inputMode: inputMode, // <-- pass inputMode here
+              inputMode: inputMode,
             }}
             {...props}
           />
@@ -77,6 +76,7 @@ const FormInput = ({
             fullWidth
             id={name}
             name={name}
+            placeholder={placeholder}
             variant="outlined"
             size="small"
             className="custom-input"
@@ -134,4 +134,3 @@ const FormInput = ({
 };
 
 export default FormInput;
-
