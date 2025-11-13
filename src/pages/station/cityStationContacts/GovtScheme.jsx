@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SectionHeader from '../../../components/common/SectionHeader'
 import FormInput from '../../../components/common/FormInput'
 import FormButton from '../../../components/common/FormButton'
-import { TextField, Tooltip } from '@mui/material'
+import { TextField,} from '@mui/material'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { __postApiData, BASE_URL } from '../../../utils/api'
@@ -191,8 +191,8 @@ const GovtScheme = () => {
     return (
         <div className="p-4 bg-white">
             <SectionHeader
-                title="Tourist Helpline"
-                description="Add or update the required details for the tourist helpline to keep records accurate and complete."
+                title="Government Schemes & Policies"
+                description="Add or update the required details for the Government Schemes & Policies to keep records accurate and complete."
             />
             <form
                 onSubmit={formik.handleSubmit}

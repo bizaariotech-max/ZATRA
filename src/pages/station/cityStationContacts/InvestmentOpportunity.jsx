@@ -13,10 +13,12 @@ import axios from 'axios'
 import { DataGrid } from '@mui/x-data-grid'
 import DatagridRowAction from '../../../components/common/DatagridRowAction'
 import { __formatDate } from '../../../utils/api/constantfun'
+import MyEditor from '../../../components/textEditor/MyEditor'
 
 const InvestmentOpportunity = () => {
     const { userDetails } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
+    const [infotxt, setInfoTxt] = useState('');
     const [dataList, setDataList] = useState({
         prodjectTypeList: [],
         unitTypeList: [],
@@ -303,6 +305,7 @@ const InvestmentOpportunity = () => {
                     toast.success("Data added successfully");
                     resetForm();
                     getInvestmentOpportunityData();
+                    setInfoTxt("");
                 } else {
                     console.log(res);
                     toast.error(res.response?.response_message || res.response?.response_message?.error || "Failed to add Data");
@@ -433,6 +436,9 @@ const InvestmentOpportunity = () => {
         const updated = formik.values.AvailableSizes.filter((_, i) => i !== index);
         formik.setFieldValue("AvailableSizes", updated);
     };
+        useEffect(() => {
+            formik.setFieldValue('Comments', infotxt);
+        }, [infotxt]);
     return (
         <div className="p-4 bg-white">
             <SectionHeader
@@ -941,17 +947,17 @@ const InvestmentOpportunity = () => {
                         })}
                     </div>
                 </div>
-                <FormInput
-                    label="Comments"
-                    name="Comments"
-                    placeholder="Enter Comments"
-                    value={formik.values?.Comments}
-                    onChange={formik.handleChange}
-                    error={formik.touched?.Comments && formik.errors?.Comments}
-                    helperText={formik.touched?.Comments && formik.errors?.Comments}
-                    multiline
-                    rows={4}
-                />
+                <div className='flex gap-2 flex-col row-span-2'>
+                        <label className="text-base font-semibold">Comments</label>
+                        <MyEditor
+                            content={infotxt}
+                            setContent={setInfoTxt} // Only update the infotxt state here
+                            desHeight={"120px"}
+                        />
+                        {formik.errors.Comments && formik.touched.Comments ? (
+                            <span className="text-danger">{formik.errors.Comments}</span>
+                        ) : null}
+                    </div>
 
                 <div className="mt-4">
                     <FormButton disabled={isLoading}>
