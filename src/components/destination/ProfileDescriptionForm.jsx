@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { TextField, IconButton, Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FormInput from "../common/FormInput";
+import MyEditor from "../textEditor/MyEditor";
 
 const ProfileDescriptionForm = ({ initialProfile = {}, onChange }) => {
     const [profileDescription, setProfileDescription] = useState({
@@ -16,10 +17,29 @@ const ProfileDescriptionForm = ({ initialProfile = {}, onChange }) => {
         LongDescription: initialProfile?.LongDescription || "",
     });
 
+    const [shortDescriptionEditor, setShortDescriptionEditor] = useState(initialProfile?.ShortDescription || "");
+    const [longDescriptionEditor, setLongDescriptionEditor] = useState(initialProfile?.LongDescription || "");
+
     // Sync changes to parent
     useEffect(() => {
         onChange(profileDescription);
     }, [profileDescription]);
+
+    // Sync short description editor to form state
+    useEffect(() => {
+        setProfileDescription((prev) => ({
+            ...prev,
+            ShortDescription: shortDescriptionEditor,
+        }));
+    }, [shortDescriptionEditor]);
+
+    // Sync long description editor to form state
+    useEffect(() => {
+        setProfileDescription((prev) => ({
+            ...prev,
+            LongDescription: longDescriptionEditor,
+        }));
+    }, [longDescriptionEditor]);
 
     // ✅ Handle text field changes
     const handleChange = (e) => {
@@ -299,25 +319,24 @@ const ProfileDescriptionForm = ({ initialProfile = {}, onChange }) => {
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4  mt-2">
-                <FormInput
-                    label="Short Description"
-                    name="ShortDescription"
-                    placeholder="Enter Short Description"
-                    multiline
-                    rows={3}
-                    value={profileDescription.ShortDescription}
-                    onChange={handleChange}
-                />
-                <FormInput
-                    label="Long Description"
-                    name="LongDescription"
-                    placeholder="Enter Long Description"
-                    multiline
-                    rows={3}
-                    value={profileDescription.LongDescription}
-                    onChange={handleChange}
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div className="flex flex-col gap-2">
+                    <label className="text-base font-semibold">Short Description</label>
+                    <MyEditor
+                        content={shortDescriptionEditor}
+                        setContent={setShortDescriptionEditor}
+                        desHeight={"120px"}
+                    />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <label className="text-base font-semibold">Long Description</label>
+                    <MyEditor
+                        content={longDescriptionEditor}
+                        setContent={setLongDescriptionEditor}
+                        desHeight={"120px"}
+                    />
+                </div>
             </div>
         </>
     );
