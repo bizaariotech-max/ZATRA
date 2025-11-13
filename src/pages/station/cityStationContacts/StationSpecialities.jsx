@@ -180,7 +180,11 @@ const StationSpecialities = () => {
             URL: [""]
         },
         onSubmit: async (values, { resetForm }) => {
-            const payload = { ...values, CityId: userDetails?.StationId, _id: editId || null };
+            const mergedVideos = [
+                    ...(values.VideoGallery?.filter(Boolean) || []),
+                    ...(values.URL?.filter(Boolean) || []),
+                ];
+            const payload = { ...values, CityId: userDetails?.StationId,VideoGallery: mergedVideos, _id: editId || null };
             try {
                 setIsLoading(true);
                 const res = await __postApiData("/api/v1/admin/SaveODOP", payload);
