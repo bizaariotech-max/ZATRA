@@ -15,6 +15,7 @@ const ProfileDescriptionForm = ({ initialProfile = {}, onChange }) => {
         ProductVideoUrl: initialProfile?.ProductVideoUrl || [""],
         ShortDescription: initialProfile?.ShortDescription || "",
         LongDescription: initialProfile?.LongDescription || "",
+        TimeNeededToVisit: initialProfile?.TimeNeededToVisit || "",
     });
 
     const [shortDescriptionEditor, setShortDescriptionEditor] = useState(initialProfile?.ShortDescription || "");
@@ -139,6 +140,7 @@ const ProfileDescriptionForm = ({ initialProfile = {}, onChange }) => {
 
     return (
         <>
+            
             <div className="flex flex-col gap-2 mb-2">
                 <label htmlFor="ProfilePicture" className="text-base font-semibold">
                     Profile Picture
@@ -337,6 +339,13 @@ const ProfileDescriptionForm = ({ initialProfile = {}, onChange }) => {
                         desHeight={"120px"}
                     />
                 </div>
+                <FormInput
+                    label="Time Needed To Visit"
+                    name="TimeNeededToVisit"
+                    placeholder="Enter Time Needed To Visit"
+                    value={profileDescription.TimeNeededToVisit}
+                    onChange={handleChange}
+                />
             </div>
         </>
     );

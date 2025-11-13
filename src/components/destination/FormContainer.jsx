@@ -67,6 +67,7 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
         ProductVideoUrl: item?.ProductVideoUrl || [""],
         ShortDescription: item?.ShortDescription || "",
         LongDescription: item?.LongDescription || "",
+        TimeNeededToVisit: item?.TimeNeededToVisit || "",
         QRCode: item?.QRCode || "", // Qr Code Generation
         IndustrySectorId: item?.IndustrySectorId?._id || null, //Business Details
         SubIndustrySectorId: item?.SubIndustrySectorId?._id || null,
@@ -174,7 +175,7 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
         ContactName: item?.ContactName || "", //Contact Information
         ContactPhoneNumber: item?.ContactPhoneNumber || "",
         ContactEmailAddress: item?.ContactEmailAddress || "",
-
+        
     });
 
 
@@ -308,7 +309,7 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
                             placeholder={"Enter Registration Number"}
                         />
                         <FormInput
-                            label="Pan Number"
+                            label="PAN Number"
                             name="PAN"
                             value={formData?.PAN}
                             onChange={handleChangeValue}
@@ -461,6 +462,7 @@ const FormContainer = ({ open, formKey, title, onClose, item, reload }) => {
                             ProductVideoUrl: formData.ProductVideoUrl,
                             ShortDescription: formData.ShortDescription,
                             LongDescription: formData.LongDescription,
+                            TimeNeededToVisit: formData.TimeNeededToVisit,
                         }}
                         onChange={(updatedProfile) => updateState(updatedProfile)}
                     />

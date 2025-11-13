@@ -122,6 +122,7 @@ const GovtScheme = () => {
             LongDesc: "",
             GovernmentAuthority: "",
             PolicyDocument: "",
+            URL: "",
         },
         onSubmit: async (values, { resetForm }) => {
             try {
@@ -276,6 +277,15 @@ const GovtScheme = () => {
                         onChange={formik.handleChange}
                         error={formik.touched?.GovernmentAuthority && formik.errors?.GovernmentAuthority}
                         helperText={formik.touched?.GovernmentAuthority && formik.errors?.GovernmentAuthority}
+                    />
+                     <FormInput
+                        label="URL of Government Authority"
+                        name="URL"
+                        placeholder="Enter URL of Government Authority"
+                        value={formik.values?.URL}
+                        onChange={formik.handleChange}
+                        error={formik.touched?.URL && formik.errors?.URL}
+                        helperText={formik.touched?.URL && formik.errors?.URL}
                     />
 
                     <div className="flex flex-col gap-2">

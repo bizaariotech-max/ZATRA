@@ -232,9 +232,9 @@ const Destination = () => {
         initialValues: {
             AssetName: "",
             NearbyAssetIds: [],
-            PanchtatvaCategoryLevel1_Id: "",
-            PanchtatvaCategoryLevel2_Id: "",
-            PanchtatvaCategoryLevel3_Id: "",
+            PanchtatvaCategoryLevel1_Id: null,
+            PanchtatvaCategoryLevel2_Id: null,
+            PanchtatvaCategoryLevel3_Id: null,
             EstablishmentId: "",
         },
         onSubmit: async (values, { resetForm }) => {
@@ -315,11 +315,16 @@ const Destination = () => {
     useEffect(() => {
         if (formik.values.PanchtatvaCategoryLevel1_Id) {
             fetchData(["panchtatva_sub_category"], "panchtatvaSubList", formik.values.PanchtatvaCategoryLevel1_Id);
+            // Reset Level 2 and Level 3 when Level 1 changes
+            formik.setFieldValue("PanchtatvaCategoryLevel2_Id", null);
+            formik.setFieldValue("PanchtatvaCategoryLevel3_Id", null);
         }
     }, [formik.values.PanchtatvaCategoryLevel1_Id]);
     useEffect(() => {
         if (formik.values.PanchtatvaCategoryLevel2_Id) {
             fetchData(["panchtatva_sub_sub_category"], "panchtatvaSubSubList", formik.values.PanchtatvaCategoryLevel2_Id);
+            // Reset Level 3 when Level 2 changes
+            formik.setFieldValue("PanchtatvaCategoryLevel3_Id", null);
         }
     }, [formik.values.PanchtatvaCategoryLevel2_Id]);
 
